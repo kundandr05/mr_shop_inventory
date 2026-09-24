@@ -72,7 +72,7 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(title: const Text('Scan to Sell')),
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(

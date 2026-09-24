@@ -22,20 +22,21 @@ class PrintLabelsScreen extends StatelessWidget {
               runSpacing: 20,
               children: units.map((unit) {
                 return pw.Container(
-                  width: 120,
+                  width: 160,
                   child: pw.Column(
                     mainAxisSize: pw.MainAxisSize.min,
                     children: [
                       pw.BarcodeWidget(
                         barcode: pw.Barcode.code128(),
                         data: unit['qr_code'],
-                        width: 120,
-                        height: 50,
+                        width: 160,
+                        height: 60,
+                        drawText: false,
                       ),
-                      pw.SizedBox(height: 4),
+                      pw.SizedBox(height: 6),
                       pw.Text(
                         unit['qr_code'],
-                        style: const pw.TextStyle(fontSize: 8),
+                        style: const pw.TextStyle(fontSize: 10),
                         textAlign: pw.TextAlign.center,
                       ),
                     ],
