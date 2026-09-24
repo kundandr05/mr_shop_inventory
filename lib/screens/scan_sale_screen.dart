@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import '../services/supabase_service.dart';
 
 class ScanSaleScreen extends StatefulWidget {
@@ -17,20 +17,15 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
     if (_isProcessing) return;
 
     try {
-      final result = await BarcodeScanner.scan(
-        options: const ScanOptions(
-          strings: {
-            'cancel': 'Cancel',
-            'flash_on': 'Flash on',
-            'flash_off': 'Flash off',
-          },
-          restrictFormat: [],
-          useCamera: -1,
+      final res = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const SimpleBarcodeScannerPage(),
         ),
       );
 
-      if (result.type == ResultType.Barcode && result.rawContent.isNotEmpty) {
-        _processSale(result.rawContent);
+      if (res is String && res != '-1' && res.isNotEmpty) {
+        _processSale(res);
       }
     } catch (e) {
       if (mounted) {
