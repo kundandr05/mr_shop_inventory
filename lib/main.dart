@@ -110,7 +110,7 @@ class _MainLayoutState extends State<MainLayout> {
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(icon: Icon(Icons.inventory_2), label: 'Inventory'),
           NavigationDestination(icon: Icon(Icons.add_box), label: 'Receive'),
-          NavigationDestination(icon: Icon(Icons.qr_code_scanner), label: 'Sell'),
+          NavigationDestination(icon: Icon(Icons.barcode_reader), label: 'Sell'),
           NavigationDestination(icon: Icon(Icons.history), label: 'History'),
         ],
       ),

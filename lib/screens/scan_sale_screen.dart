@@ -78,7 +78,7 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.qr_code_scanner, size: 120, color: Colors.black87),
+              const Icon(Icons.barcode_reader, size: 120, color: Colors.black87),
               const SizedBox(height: 32),
               const Text(
                 'Ready to scan items?',

@@ -27,10 +27,10 @@ class PrintLabelsScreen extends StatelessWidget {
                     mainAxisSize: pw.MainAxisSize.min,
                     children: [
                       pw.BarcodeWidget(
-                        barcode: pw.Barcode.qrCode(),
+                        barcode: pw.Barcode.code128(),
                         data: unit['qr_code'],
-                        width: 100,
-                        height: 100,
+                        width: 120,
+                        height: 50,
                       ),
                       pw.SizedBox(height: 4),
                       pw.Text(
@@ -54,7 +54,7 @@ class PrintLabelsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Print QR Labels')),
+      appBar: AppBar(title: const Text('Print Barcode Labels')),
       body: PdfPreview(
         build: (format) async {
           final doc = await _generatePdf(format);

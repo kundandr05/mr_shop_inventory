@@ -11,12 +11,12 @@ dependencies:
   flutter:
     sdk: flutter
   supabase_flutter: ^2.5.0
-  qr_flutter: ^4.1.0
   printing: ^5.11.1
   pdf: ^3.10.7
   intl: ^0.19.0
   fl_chart: ^1.2.0
   simple_barcode_scanner: ^0.6.0
+  barcode_widget: ^2.0.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

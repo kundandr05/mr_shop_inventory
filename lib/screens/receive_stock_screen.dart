@@ -98,7 +98,7 @@ class _ReceiveStockScreenState extends State<ReceiveStockScreen> {
               onPressed: _isLoading ? null : _generateStock,
               child: _isLoading 
                   ? const CircularProgressIndicator() 
-                  : const Text('Generate QR Codes'),
+                  : const Text('Generate Barcodes'),
             ),
           ],
         ),
