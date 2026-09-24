@@ -15,6 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalStock = 0;
   double totalRevenue = 0.0;
   List<double> weeklySales = List.filled(7, 0.0);
+  DateTime startOfWeek = DateTime.now();
   bool _isLoading = true;
 
   @override
@@ -36,16 +37,20 @@ class _HomeScreenState extends State<HomeScreen> {
       double rev = 0;
       List<double> wSales = List.filled(7, 0.0);
       final now = DateTime.now();
+      
+      // Calculate start of the week (Sunday)
+      final offsetToSunday = now.weekday == 7 ? 0 : now.weekday;
+      startOfWeek = DateTime(now.year, now.month, now.day).subtract(Duration(days: offsetToSunday));
 
       for (var unit in soldUnits) {
         final price = (unit['products']['price'] as num?)?.toDouble() ?? 0.0;
         rev += price;
         
         if (unit['sold_at'] != null) {
-          final soldDate = DateTime.parse(unit['sold_at']);
-          final difference = now.difference(soldDate).inDays;
+          final soldDate = DateTime.parse(unit['sold_at']).toLocal(); // Convert to local IST time
+          final difference = DateTime(soldDate.year, soldDate.month, soldDate.day).difference(startOfWeek).inDays;
           if (difference >= 0 && difference < 7) {
-            wSales[6 - difference] += price;
+            wSales[difference] += price;
           }
         }
       }
@@ -102,8 +107,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: _buildStatCard(
                   title: 'Total Revenue',
-                  value: '\$${totalRevenue.toStringAsFixed(0)}',
-                  icon: Icons.attach_money,
+                  value: '₹${totalRevenue.toStringAsFixed(0)}',
+                  icon: Icons.currency_rupee,
                   color: Colors.purple,
                 ),
               ),
@@ -142,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     sideTitles: SideTitles(
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
-                        final date = DateTime.now().subtract(Duration(days: 6 - value.toInt()));
+                        final date = startOfWeek.add(Duration(days: value.toInt()));
                         return Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(DateFormat('E').format(date), style: const TextStyle(fontSize: 12)),

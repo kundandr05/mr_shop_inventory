@@ -108,6 +108,18 @@ class SupabaseService {
         .timeout(const Duration(seconds: 8));
     return response;
   }
+
+  // 6. Get In-Stock Units for Reprinting Barcodes
+  static Future<List<dynamic>> getInStockUnits(String productId) async {
+    final response = await _supabase
+        .from('units')
+        .select()
+        .eq('product_id', productId)
+        .eq('status', 'in_stock')
+        .order('qr_code', ascending: false)
+        .timeout(const Duration(seconds: 8));
+    return response;
+  }
 }
 
 extension on List {

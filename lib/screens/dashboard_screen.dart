@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/supabase_service.dart';
-
+import 'print_labels_screen.dart';
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -79,11 +79,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               _showAddProductDialog(context, product: product);
                             } else if (value == 'delete') {
                               _deleteProduct(product['product_id']);
+                            } else if (value == 'reprint') {
+                              _reprintBarcodes(product['product_id']);
                             }
                           },
                           itemBuilder: (context) => [
-                            const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                            const PopupMenuItem(value: 'delete', child: Text('Delete', style: TextStyle(color: Colors.red))),
+                            const PopupMenuItem(value: 'reprint', child: Text('Stock Barcodes')),
+                            const PopupMenuItem(value: 'edit', child: Text('Edit Product')),
+                            const PopupMenuItem(value: 'delete', child: Text('Delete Product', style: TextStyle(color: Colors.red))),
                           ],
                         ),
                       ],
@@ -98,6 +101,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> _reprintBarcodes(String productId) async {
+    setState(() => _isLoading = true);
+    try {
+      final units = await SupabaseService.getInStockUnits(productId);
+      if (units.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No active stock for this product.')));
+        }
+        return;
+      }
+      if (mounted) {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => PrintLabelsScreen(units: units)));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error loading barcodes: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   Future<void> _deleteProduct(String id) async {
