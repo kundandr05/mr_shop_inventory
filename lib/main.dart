@@ -28,30 +28,39 @@ class InventoryApp extends StatelessWidget {
       title: 'Shop Inventory',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          brightness: Brightness.dark,
+          brightness: Brightness.light,
           seedColor: const Color(0xFFD4AF37), // Gold
           primary: const Color(0xFFD4AF37), // Gold
-          secondary: const Color(0xFFD4AF37),
-          surface: const Color(0xFF121212), // Deep dark grey
-          background: Colors.black,
+          secondary: Colors.black87,
+          surface: Colors.white,
+          background: Colors.grey[50]!,
         ),
-        scaffoldBackgroundColor: Colors.black,
+        scaffoldBackgroundColor: Colors.grey[50],
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.black,
-          foregroundColor: Color(0xFFD4AF37), // Gold text on black app bar
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black87,
           elevation: 0,
+          centerTitle: true,
+          iconTheme: IconThemeData(color: Colors.black87),
+          titleTextStyle: TextStyle(color: Colors.black87, fontSize: 20, fontWeight: FontWeight.bold),
         ),
         navigationBarTheme: NavigationBarThemeData(
-          backgroundColor: const Color(0xFF1E1E1E),
-          indicatorColor: const Color(0xFFD4AF37).withOpacity(0.3),
+          backgroundColor: Colors.white,
+          indicatorColor: const Color(0xFFD4AF37).withOpacity(0.2),
           iconTheme: MaterialStateProperty.resolveWith((states) {
             if (states.contains(MaterialState.selected)) return const IconThemeData(color: Color(0xFFD4AF37));
             return const IconThemeData(color: Colors.grey);
           }),
           labelTextStyle: MaterialStateProperty.resolveWith((states) {
             if (states.contains(MaterialState.selected)) return const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.bold);
-            return const TextStyle(color: Colors.grey);
+            return const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500);
           }),
+        ),
+        cardTheme: CardTheme(
+          color: Colors.white,
+          elevation: 2,
+          shadowColor: Colors.black.withOpacity(0.1),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
         useMaterial3: true,
       ),

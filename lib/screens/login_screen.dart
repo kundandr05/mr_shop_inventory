@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Premium Black Background
+      backgroundColor: Colors.grey[50], // Premium Light Background
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -54,10 +54,10 @@ class _LoginScreenState extends State<LoginScreen> {
             margin: const EdgeInsets.all(24),
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E1E1E),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
-                BoxShadow(color: const Color(0xFFD4AF37).withOpacity(0.2), blurRadius: 30, offset: const Offset(0, 10))
+                BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 30, offset: const Offset(0, 10))
               ],
             ),
             child: Column(
@@ -67,12 +67,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 24),
                 Text(
                   _isSignUp ? 'Create Account' : 'Welcome Back',
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFFD4AF37)),
+                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'MR Mobile Accessories',
-                  style: TextStyle(color: Colors.grey[400], fontSize: 16),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 16),
                 ),
                 const SizedBox(height: 32),
                 TextField(
