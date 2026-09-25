@@ -53,6 +53,12 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to scan barcodes and take product photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs gallery access to upload product photos from your phone.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs microphone access for recording videos if requested.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

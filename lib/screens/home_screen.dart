@@ -130,7 +130,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return RefreshIndicator(
       onRefresh: _loadStats,
-      child: ListView(
+      child: SafeArea(
+        child: ListView(
         padding: const EdgeInsets.all(24),
         children: [
           Row(
@@ -326,6 +327,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )).toList(),
           ],
         ],
+      ),
       ),
     );
   }
