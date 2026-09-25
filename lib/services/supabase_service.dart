@@ -114,7 +114,7 @@ class SupabaseService {
   static Future<List<dynamic>> getSoldUnits() async {
     final response = await _supabase
         .from('units')
-        .select('*, products!inner(name, product_code, price, image_url)')
+        .select('*, products!inner(name, product_code, price, image_url, brand)')
         .eq('status', 'sold')
         .order('sold_at', ascending: false)
         .timeout(const Duration(seconds: 8));

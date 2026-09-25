@@ -17,6 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double totalExpenses = 0.0;
   double netProfit = 0.0;
   List<double> weeklySales = List.filled(7, 0.0);
+  Map<String, double> brandSales = {};
   DateTime startOfWeek = DateTime.now();
   List<dynamic> lowStockProducts = [];
   bool _isLoading = true;
@@ -45,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
       
       double rev = 0;
       List<double> wSales = List.filled(7, 0.0);
+      Map<String, double> bSales = {};
       final now = DateTime.now();
       
       // Calculate start of the week (Sunday)
@@ -53,7 +55,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
       for (var unit in soldUnits) {
         final price = (unit['products']['price'] as num?)?.toDouble() ?? 0.0;
+        final brand = (unit['products']['brand'] as String?)?.trim() ?? 'Unknown';
+        
         rev += price;
+        bSales[brand] = (bSales[brand] ?? 0.0) + price;
         
         if (unit['sold_at'] != null) {
           final soldDate = DateTime.parse(unit['sold_at']).toLocal(); // Convert to local IST time
@@ -78,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
           totalExpenses = exp;
           netProfit = rev - exp;
           weeklySales = wSales;
+          brandSales = bSales;
           _isLoading = false;
         });
       }
@@ -257,6 +263,40 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 32),
+          if (brandSales.isNotEmpty) ...[
+            const Text('Top Selling Brands', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            Container(
+              height: 250,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: PieChart(
+                      PieChartData(
+                        sectionsSpace: 2,
+                        centerSpaceRadius: 40,
+                        sections: _buildPieChartSections(),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _buildPieChartLegend(),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 32),
+          ],
           if (lowStockProducts.isNotEmpty) ...[
             const Text('Low Stock Alerts ⚠️', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red)),
             const SizedBox(height: 16),
@@ -312,5 +352,56 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  final List<Color> _brandColors = [
+    Colors.blue, Colors.red, Colors.green, Colors.orange, 
+    Colors.purple, Colors.teal, Colors.pink, Colors.amber
+  ];
+
+  List<PieChartSectionData> _buildPieChartSections() {
+    final List<PieChartSectionData> sections = [];
+    int i = 0;
+    
+    brandSales.forEach((brand, revenue) {
+      final color = _brandColors[i % _brandColors.length];
+      final percentage = (revenue / totalRevenue) * 100;
+      
+      sections.add(
+        PieChartSectionData(
+          color: color,
+          value: revenue,
+          title: '${percentage.toStringAsFixed(1)}%',
+          radius: 50,
+          titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+        )
+      );
+      i++;
+    });
+    return sections;
+  }
+
+  List<Widget> _buildPieChartLegend() {
+    final List<Widget> legends = [];
+    int i = 0;
+    brandSales.forEach((brand, revenue) {
+      final color = _brandColors[i % _brandColors.length];
+      legends.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            children: [
+              Container(width: 12, height: 12, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+              const SizedBox(width: 8),
+              Text(brand, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+              const SizedBox(width: 8),
+              Text('₹${revenue.toStringAsFixed(0)}', style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+            ],
+          ),
+        )
+      );
+      i++;
+    });
+    return legends;
   }
 }

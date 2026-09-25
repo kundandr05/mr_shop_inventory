@@ -7,6 +7,8 @@ import 'package:printing/printing.dart';
 
 import 'package:share_plus/share_plus.dart';
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import '../utils/download_stub.dart' if (dart.library.html) '../utils/web_download.dart';
 import 'sale_success_screen.dart';
 
 class SalesHistoryScreen extends StatefulWidget {
@@ -138,12 +140,19 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
     });
 
     final csvData = [headers.join(','), ...rows].join('\n');
-    final bytes = utf8.encode(csvData);
     
-    await Share.shareXFiles(
-      [XFile.fromData(bytes, mimeType: 'text/csv', name: 'sales_history.csv')],
-      text: 'Sales History Export',
-    );
+    if (kIsWeb) {
+      downloadCsvWeb(csvData, 'sales_history.csv');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Download started!')));
+      }
+    } else {
+      final bytes = utf8.encode(csvData);
+      await Share.shareXFiles(
+        [XFile.fromData(bytes, mimeType: 'text/csv', name: 'sales_history.csv')],
+        text: 'Sales History Export',
+      );
+    }
   }
 
   @override
