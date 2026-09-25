@@ -57,7 +57,7 @@ class _AuthGateState extends State<AuthGate> {
     return StreamBuilder<AuthState>(
       stream: Supabase.instance.client.auth.onAuthStateChange,
       initialData: AuthState(
-        'INITIAL',
+        AuthChangeEvent.initialSession,
         Supabase.instance.client.auth.currentSession,
       ),
       builder: (context, snapshot) {
