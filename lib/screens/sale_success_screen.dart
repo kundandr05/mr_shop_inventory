@@ -44,14 +44,14 @@ class SaleSuccessScreen extends StatelessWidget {
                           alignment: Alignment.bottomRight,
                           child: const CircleAvatar(
                             radius: 16,
-                            backgroundcolor: Color(0xFFD4AF37),
+                            backgroundColor: Color(0xFFD4AF37),
                             child: Icon(Icons.check, size: 20, color: Colors.white),
                           ),
                         ),
                       )
                     : const CircleAvatar(
                         radius: 50,
-                        backgroundcolor: Color(0xFFD4AF37),
+                        backgroundColor: Color(0xFFD4AF37),
                         child: Icon(Icons.check, size: 60, color: Colors.white),
                       ),
                 const SizedBox(height: 24),
