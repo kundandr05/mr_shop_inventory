@@ -92,7 +92,7 @@ class SupabaseService {
           'sold_at': DateTime.now().toUtc().toIso8601String()
         })
         .eq('qr_code', qrCode)
-        .select()
+        .select('*, products(*)')
         .single();
         
     return {'message': 'Marked as sold', 'unit': response};

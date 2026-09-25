@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import '../services/supabase_service.dart';
+import 'sale_success_screen.dart';
 
 class ScanSaleScreen extends StatefulWidget {
   const ScanSaleScreen({super.key});
@@ -43,10 +44,10 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
     try {
       final result = await SupabaseService.sellUnit(qrCode);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Sale confirmed: ${result['unit']['qr_code']}'),
-            backgroundColor: Colors.green,
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => SaleSuccessScreen(unit: result['unit']),
           ),
         );
       }

@@ -7,6 +7,7 @@ import 'package:printing/printing.dart';
 
 import 'package:share_plus/share_plus.dart';
 import 'dart:convert';
+import 'sale_success_screen.dart';
 
 class SalesHistoryScreen extends StatefulWidget {
   const SalesHistoryScreen({super.key});
@@ -16,8 +17,10 @@ class SalesHistoryScreen extends StatefulWidget {
 }
 
 class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
+  List<dynamic> _allSales = [];
   List<dynamic> _sales = [];
   bool _isLoading = true;
+  String _filter = 'All Time';
 
   @override
   void initState() {
@@ -25,18 +28,41 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
     _loadSales();
   }
 
+  void _applyFilter() {
+    final now = DateTime.now();
+    setState(() {
+      if (_filter == 'All Time') {
+        _sales = _allSales;
+      } else {
+        _sales = _allSales.where((sale) {
+          if (sale['sold_at'] == null) return false;
+          final soldAt = DateTime.parse(sale['sold_at']).toLocal();
+          final diff = DateTime(now.year, now.month, now.day)
+              .difference(DateTime(soldAt.year, soldAt.month, soldAt.day))
+              .inDays;
+              
+          if (_filter == 'Today') return diff == 0;
+          if (_filter == 'Yesterday') return diff == 1;
+          if (_filter == 'Last 7 Days') return diff >= 0 && diff <= 7;
+          return true;
+        }).toList();
+      }
+    });
+  }
+
   Future<void> _loadSales() async {
     setState(() => _isLoading = true);
     try {
       final response = await Supabase.instance.client
           .from('units')
-          .select('*, products(name, price)')
+          .select('*, products(*)')
           .eq('status', 'sold')
           .order('sold_at', ascending: false);
           
       setState(() {
-        _sales = response;
+        _allSales = response;
       });
+      _applyFilter();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
@@ -126,6 +152,20 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
       appBar: AppBar(
         title: const Text('Sales History & Returns'),
         actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.filter_list),
+            tooltip: 'Filter by Date',
+            onSelected: (value) {
+              _filter = value;
+              _applyFilter();
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(value: 'All Time', child: Text('All Time')),
+              const PopupMenuItem(value: 'Today', child: Text('Today')),
+              const PopupMenuItem(value: 'Yesterday', child: Text('Yesterday')),
+              const PopupMenuItem(value: 'Last 7 Days', child: Text('Last 7 Days')),
+            ],
+          ),
           IconButton(icon: const Icon(Icons.table_chart), onPressed: _exportHistoryCsv, tooltip: 'Export Excel/CSV'),
           IconButton(icon: const Icon(Icons.picture_as_pdf), onPressed: _exportHistoryPdf, tooltip: 'Export PDF'),
           IconButton(icon: const Icon(Icons.refresh), onPressed: _loadSales),
@@ -145,6 +185,14 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => SaleSuccessScreen(unit: sale),
+                        ),
+                      );
+                    },
                     leading: const CircleAvatar(
                       backgroundColor: Colors.green,
                       child: Icon(Icons.check, color: Colors.white),
