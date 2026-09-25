@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
+import 'dart:typed_data';
 
 class SupabaseService {
   static final _supabase = Supabase.instance.client;
@@ -24,6 +25,13 @@ class SupabaseService {
   // Delete Product
   static Future<void> deleteProduct(String id) async {
     await _supabase.from('products').delete().eq('id', id).timeout(const Duration(seconds: 8));
+  }
+
+  // Upload Product Image
+  static Future<String?> uploadProductImage(String fileName, Uint8List fileBytes) async {
+    final path = 'product_images/$fileName';
+    await _supabase.storage.from('products').uploadBinary(path, fileBytes);
+    return _supabase.storage.from('products').getPublicUrl(path);
   }
 
   // 3. Generate batch units

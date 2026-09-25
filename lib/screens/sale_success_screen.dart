@@ -27,12 +27,33 @@ class SaleSuccessScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Success Checkmark
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.green,
-                  child: Icon(Icons.check, size: 60, color: Colors.white),
-                ),
+                // Success Checkmark or Product Image
+                product['image_url'] != null
+                    ? Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.green, width: 4),
+                          image: DecorationImage(
+                            image: NetworkImage(product['image_url']),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: const CircleAvatar(
+                            radius: 16,
+                            backgroundColor: Colors.green,
+                            child: Icon(Icons.check, size: 20, color: Colors.white),
+                          ),
+                        ),
+                      )
+                    : const CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.green,
+                        child: Icon(Icons.check, size: 60, color: Colors.white),
+                      ),
                 const SizedBox(height: 24),
                 const Text(
                   'Sale Successful!',

@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double totalRevenue = 0.0;
   List<double> weeklySales = List.filled(7, 0.0);
   DateTime startOfWeek = DateTime.now();
+  List<dynamic> lowStockProducts = [];
   bool _isLoading = true;
 
   @override
@@ -30,8 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
       final soldUnits = await SupabaseService.getSoldUnits();
       
       int stockCount = 0;
+      List<dynamic> lowStock = [];
       for (var p in products) {
-        stockCount += (p['in_stock_count'] as int? ?? 0);
+        int inStock = p['in_stock_count'] as int? ?? 0;
+        stockCount += inStock;
+        if (inStock < 5) {
+          lowStock.add(p);
+        }
       }
       
       double rev = 0;
@@ -59,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           totalProducts = products.length;
           totalStock = stockCount;
+          lowStockProducts = lowStock;
           totalRevenue = rev;
           weeklySales = wSales;
           _isLoading = false;
@@ -182,6 +189,35 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 32),
+          if (lowStockProducts.isNotEmpty) ...[
+            const Text('Low Stock Alerts ⚠️', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red)),
+            const SizedBox(height: 16),
+            ...lowStockProducts.map((p) => Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.red[50],
+                border: Border.all(color: Colors.red.withOpacity(0.3)),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.warning_amber_rounded, color: Colors.red),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(p['name'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text('Only ${p['in_stock_count']} left in stock!', style: TextStyle(color: Colors.red[700])),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )).toList(),
+          ],
         ],
       ),
     );

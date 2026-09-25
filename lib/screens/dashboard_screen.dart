@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:typed_data';
 import '../services/supabase_service.dart';
 import 'print_labels_screen.dart';
 class DashboardScreen extends StatefulWidget {
@@ -52,6 +54,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
+                    leading: product['image_url'] != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(product['image_url'], width: 50, height: 50, fit: BoxFit.cover),
+                          )
+                        : Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
+                            child: Icon(Icons.image, color: Colors.grey[400]),
+                          ),
                     title: Text(product['name']),
                     subtitle: Text('${product['product_code']} | ${product['brand'] ?? 'No Brand'}'),
                     trailing: Row(
@@ -158,63 +171,120 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final nameCtrl = TextEditingController(text: isEdit ? product['name'] : '');
     final brandCtrl = TextEditingController(text: isEdit ? product['brand'] : '');
     final priceCtrl = TextEditingController(text: isEdit ? product['price']?.toString() : '');
+    
+    Uint8List? selectedImageBytes;
+    String? currentImageUrl = isEdit ? product['image_url'] : null;
 
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text(isEdit ? 'Edit Product' : 'Add New Product'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(controller: codeCtrl, decoration: const InputDecoration(labelText: 'Product Code (e.g. HP-01)')),
-                TextField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Product Name')),
-                TextField(controller: brandCtrl, decoration: const InputDecoration(labelText: 'Brand')),
-                TextField(controller: priceCtrl, decoration: const InputDecoration(labelText: 'Price'), keyboardType: TextInputType.number),
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text(isEdit ? 'Edit Product' : 'Add New Product'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Image Picker Section
+                    GestureDetector(
+                      onTap: () async {
+                        final picker = ImagePicker();
+                        final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+                        if (pickedFile != null) {
+                          final bytes = await pickedFile.readAsBytes();
+                          setDialogState(() {
+                            selectedImageBytes = bytes;
+                            currentImageUrl = null;
+                          });
+                        }
+                      },
+                      child: Container(
+                        height: 120,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey[400]!),
+                        ),
+                        child: selectedImageBytes != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.memory(selectedImageBytes!, fit: BoxFit.cover),
+                              )
+                            : (currentImageUrl != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.network(currentImageUrl!, fit: BoxFit.cover),
+                                  )
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.add_a_photo, color: Colors.grey[600]),
+                                      const SizedBox(height: 4),
+                                      Text('Add Photo', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                                    ],
+                                  )),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(controller: codeCtrl, decoration: const InputDecoration(labelText: 'Product Code (e.g. HP-01)')),
+                    TextField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Product Name')),
+                    TextField(controller: brandCtrl, decoration: const InputDecoration(labelText: 'Brand')),
+                    TextField(controller: priceCtrl, decoration: const InputDecoration(labelText: 'Price'), keyboardType: TextInputType.number),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (codeCtrl.text.isEmpty || nameCtrl.text.isEmpty || priceCtrl.text.isEmpty) {
+                      return;
+                    }
+                    
+                    final parentContext = context;
+                    Navigator.pop(context);
+                    
+                    setState(() => _isLoading = true);
+                    try {
+                      String? finalImageUrl = currentImageUrl;
+                      
+                      if (selectedImageBytes != null) {
+                        final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+                        finalImageUrl = await SupabaseService.uploadProductImage(fileName, selectedImageBytes!);
+                      }
+
+                      final data = {
+                        'product_code': codeCtrl.text,
+                        'name': nameCtrl.text,
+                        'brand': brandCtrl.text,
+                        'price': double.tryParse(priceCtrl.text) ?? 0.0,
+                        if (finalImageUrl != null) 'image_url': finalImageUrl,
+                      };
+                      
+                      if (isEdit) {
+                        await SupabaseService.updateProduct(product['product_id'], data);
+                      } else {
+                        await SupabaseService.createProduct(data);
+                      }
+                      
+                      _loadProducts();
+                    } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(content: Text('Error: $e')));
+                        setState(() => _isLoading = false);
+                      }
+                    }
+                  },
+                  child: const Text('Save'),
+                ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                if (codeCtrl.text.isEmpty || nameCtrl.text.isEmpty || priceCtrl.text.isEmpty) {
-                  return;
-                }
-                
-                final parentContext = context;
-                Navigator.pop(context);
-                
-                setState(() => _isLoading = true);
-                try {
-                  final data = {
-                    'product_code': codeCtrl.text,
-                    'name': nameCtrl.text,
-                    'brand': brandCtrl.text,
-                    'price': double.tryParse(priceCtrl.text) ?? 0.0,
-                  };
-                  
-                  if (isEdit) {
-                    await SupabaseService.updateProduct(product['product_id'], data);
-                  } else {
-                    await SupabaseService.createProduct(data);
-                  }
-                  
-                  _loadProducts();
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(content: Text('Error: $e')));
-                    setState(() => _isLoading = false);
-                  }
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
+            );
+          }
         );
       },
     );
