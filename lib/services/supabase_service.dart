@@ -19,12 +19,12 @@ class SupabaseService {
 
   // Update Product
   static Future<void> updateProduct(String id, Map<String, dynamic> data) async {
-    await _supabase.from('products').update(data).eq('product_id', id).timeout(const Duration(seconds: 8));
+    await _supabase.from('products').update(data).eq('id', id).timeout(const Duration(seconds: 8));
   }
 
   // Delete Product
   static Future<void> deleteProduct(String id) async {
-    await _supabase.from('products').delete().eq('product_id', id).timeout(const Duration(seconds: 8));
+    await _supabase.from('products').delete().eq('id', id).timeout(const Duration(seconds: 8));
   }
 
   // Upload Product Image
