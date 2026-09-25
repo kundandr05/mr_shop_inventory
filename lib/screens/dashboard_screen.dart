@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
 import '../services/supabase_service.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import '../utils/pwa_stub.dart' if (dart.library.html) '../utils/pwa_web.dart';
 import 'print_labels_screen.dart';
+
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -34,7 +37,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         );
       }
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -69,6 +72,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           onChanged: (value) => setState(() => _searchQuery = value),
         ),
+        actions: [
+          if (kIsWeb)
+            IconButton(
+              icon: const Icon(Icons.install_mobile),
+              tooltip: 'Install App',
+              onPressed: () {
+                promptPwaInstall();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('If supported, the install prompt will appear!')),
+                );
+              },
+            ),
+        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

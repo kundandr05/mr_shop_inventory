@@ -34,6 +34,23 @@
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 </head>
 <body>
+  <script>
+    window.pwaInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      window.pwaInstallPrompt = e;
+    });
+
+    window.promptInstall = async function() {
+      if (window.pwaInstallPrompt) {
+        window.pwaInstallPrompt.prompt();
+        const { outcome } = await window.pwaInstallPrompt.userChoice;
+        window.pwaInstallPrompt = null;
+        return outcome === 'accepted';
+      }
+      return false;
+    };
+  </script>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader
