@@ -30,30 +30,37 @@ class InventoryApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           brightness: Brightness.light,
           seedColor: const Color(0xFFD4AF37), // Gold
-          primary: const Color(0xFFD4AF37), // Gold
-          secondary: Colors.black87,
+          primary: const Color(0xFFD4AF37),
+          secondary: const Color(0xFF2B2B2B), // Elegant Dark Grey
           surface: Colors.white,
-          background: Colors.grey[50]!,
+          background: const Color(0xFFF8F9FA), // Soft off-white background
         ),
-        scaffoldBackgroundColor: Colors.grey[50],
+        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold, color: Color(0xFF2B2B2B)),
+          headlineMedium: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.w700, color: Color(0xFF2B2B2B)),
+          bodyLarge: TextStyle(fontFamily: 'Roboto', color: Color(0xFF4A4A4A)),
+        ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
-          foregroundColor: Colors.black87,
+          foregroundColor: Color(0xFF2B2B2B),
           elevation: 0,
           centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.black87),
-          titleTextStyle: TextStyle(color: Colors.black87, fontSize: 20, fontWeight: FontWeight.bold),
+          iconTheme: IconThemeData(color: Color(0xFF2B2B2B)),
+          titleTextStyle: TextStyle(color: Color(0xFF2B2B2B), fontSize: 22, fontWeight: FontWeight.w800, letterSpacing: -0.5),
         ),
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: Colors.white,
-          indicatorColor: const Color(0xFFD4AF37).withOpacity(0.2),
+          indicatorColor: const Color(0xFFD4AF37).withOpacity(0.15),
+          elevation: 10,
+          shadowColor: Colors.black.withOpacity(0.05),
           iconTheme: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) return const IconThemeData(color: Color(0xFFD4AF37));
-            return const IconThemeData(color: Colors.grey);
+            if (states.contains(MaterialState.selected)) return const IconThemeData(color: Color(0xFFD4AF37), size: 28);
+            return const IconThemeData(color: Color(0xFF8E8E93), size: 24);
           }),
           labelTextStyle: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) return const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.bold);
-            return const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500);
+            if (states.contains(MaterialState.selected)) return const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.w700, fontSize: 13);
+            return const TextStyle(color: Color(0xFF8E8E93), fontWeight: FontWeight.w500, fontSize: 12);
           }),
         ),
         useMaterial3: true,

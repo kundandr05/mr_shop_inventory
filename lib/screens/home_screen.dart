@@ -208,13 +208,13 @@ class _HomeScreenState extends State<HomeScreen> {
           const Text('Revenue This Week', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
           Container(
-            height: 300,
-            padding: const EdgeInsets.all(24),
+            height: 320,
+            padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(24),
               boxShadow: [
-                BoxShadow(color: const Color(0xFFD4AF37).withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+                BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 40, offset: const Offset(0, 15)),
               ],
             ),
             child: BarChart(
@@ -268,13 +268,13 @@ class _HomeScreenState extends State<HomeScreen> {
             const Text('Top Selling Brands', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
             Container(
-              height: 250,
-              padding: const EdgeInsets.all(24),
+              height: 280,
+              padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(24),
                 boxShadow: [
-                  BoxShadow(color: const Color(0xFFD4AF37).withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+                  BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 40, offset: const Offset(0, 15)),
                 ],
               ),
               child: Row(
@@ -334,23 +334,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildStatCard({required String title, required String value, required IconData icon, required Color color}) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: color.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+          BoxShadow(color: color.withOpacity(0.06), blurRadius: 30, offset: const Offset(0, 15)),
         ],
-        border: Border.all(color: color.withOpacity(0.2), width: 2),
+        border: Border.all(color: color.withOpacity(0.1), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 32, color: color),
-          const SizedBox(height: 16),
-          Text(value, style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: color)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 28, color: color),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Text(value, style: TextStyle(fontSize: 34, fontWeight: FontWeight.w900, color: const Color(0xFF2B2B2B), letterSpacing: -1)),
           const SizedBox(height: 4),
-          Text(title, style: TextStyle(fontSize: 14, color: Colors.grey[600], fontWeight: FontWeight.w600)),
+          Text(title, style: TextStyle(fontSize: 15, color: Colors.grey[600], fontWeight: FontWeight.w600, letterSpacing: 0.2)),
         ],
       ),
     );

@@ -71,68 +71,93 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(title: const Text('Scan to Sell')),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.barcode_reader, size: 120, color: Colors.black87),
-              const SizedBox(height: 32),
-              const Text(
-                'Ready to scan items?',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Tap the button below to open the camera scanner.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              const SizedBox(height: 48),
-              SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.camera_alt, size: 28),
-                  label: const Text('Open Scanner', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD4AF37), // Gold
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    elevation: 4,
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          child: Container(
+            padding: const EdgeInsets.all(40),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(32),
+              boxShadow: [
+                BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 40, offset: const Offset(0, 15)),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD4AF37).withOpacity(0.1),
+                    shape: BoxShape.circle,
                   ),
-                  onPressed: _isProcessing ? null : _startBarcodeScan,
+                  child: const Icon(Icons.qr_code_scanner, size: 80, color: Color(0xFFD4AF37)),
                 ),
-              ),
-              const SizedBox(height: 48),
-              const Divider(),
-              const SizedBox(height: 24),
-              const Text('Or enter manually:', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _manualController,
-                decoration: InputDecoration(
-                  hintText: 'Type code and press enter',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  filled: true,
-                  fillColor: Colors.white,
-                  prefixIcon: const Icon(Icons.keyboard),
-                ),
-                onSubmitted: (value) {
-                  if (value.isNotEmpty) {
-                    _processSale(value);
-                    _manualController.clear();
-                  }
-                },
-              ),
-              if (_isProcessing) ...[
                 const SizedBox(height: 32),
-                const CircularProgressIndicator(color: Color(0xFFD4AF37)),
-              ]
-            ],
+                const Text(
+                  'Ready to scan items?',
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: Color(0xFF2B2B2B), letterSpacing: -0.5),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Tap the button below to open the camera scanner.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 48),
+                SizedBox(
+                  width: double.infinity,
+                  height: 64,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.camera_alt, size: 24),
+                    label: const Text('Open Scanner', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFD4AF37), // Gold
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      elevation: 0,
+                    ),
+                    onPressed: _isProcessing ? null : _startBarcodeScan,
+                  ),
+                ),
+                const SizedBox(height: 48),
+                Row(
+                  children: [
+                    Expanded(child: Divider(color: Colors.grey[200])),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text('OR ENTER MANUALLY', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1)),
+                    ),
+                    Expanded(child: Divider(color: Colors.grey[200])),
+                  ],
+                ),
+                const SizedBox(height: 32),
+                TextField(
+                  controller: _manualController,
+                  decoration: InputDecoration(
+                    hintText: 'Type code and press enter',
+                    hintStyle: TextStyle(color: Colors.grey[400]),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                    filled: true,
+                    fillColor: const Color(0xFFF8F9FA),
+                    prefixIcon: const Icon(Icons.keyboard, color: Colors.grey),
+                  ),
+                  onSubmitted: (value) {
+                    if (value.isNotEmpty) {
+                      _processSale(value);
+                      _manualController.clear();
+                    }
+                  },
+                ),
+                if (_isProcessing) ...[
+                  const SizedBox(height: 32),
+                  const CircularProgressIndicator(color: Color(0xFFD4AF37)),
+                ]
+              ],
+            ),
           ),
         ),
       ),
