@@ -109,14 +109,13 @@ class _MainLayoutState extends State<MainLayout> {
       callback: (payload) {
         final eventType = payload.eventType;
         final newRecord = payload.newRecord;
-        final oldRecord = payload.oldRecord;
 
         if (eventType == PostgresChangeEvent.insert) {
           if (newRecord['status'] == 'in_stock') {
             _showNotification('📦 New stock generated! (Barcode: ${newRecord['qr_code']})');
           }
         } else if (eventType == PostgresChangeEvent.update) {
-          if (newRecord['status'] == 'sold' && oldRecord['status'] == 'in_stock') {
+          if (newRecord['status'] == 'sold') {
             _showNotification('💰 Cha-ching! Item sold! (Barcode: ${newRecord['qr_code']})');
           }
         }
