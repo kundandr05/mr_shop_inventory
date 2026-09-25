@@ -28,39 +28,39 @@ class InventoryApp extends StatelessWidget {
       title: 'Shop Inventory',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          brightness: Brightness.dark,
+          brightness: Brightness.light,
           seedColor: const Color(0xFFD4AF37), // Gold
           primary: const Color(0xFFD4AF37),
-          secondary: const Color(0xFFD4AF37), 
-          surface: const Color(0xFF1E293B), // Card background (Lighter Navy)
-          background: const Color(0xFF0F172A), // Scaffold background (Deep Navy)
+          secondary: const Color(0xFF2B2B2B), // Elegant Dark Grey
+          surface: Colors.white,
+          background: const Color(0xFFF8F9FA), // Soft off-white background
         ),
-        scaffoldBackgroundColor: const Color(0xFF0F172A), // Deep Navy
+        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
         textTheme: const TextTheme(
-          displayLarge: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold, color: Colors.white),
-          headlineMedium: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.w700, color: Colors.white),
-          bodyLarge: TextStyle(fontFamily: 'Roboto', color: Color(0xFFF1F5F9)),
+          displayLarge: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold, color: Color(0xFF2B2B2B)),
+          headlineMedium: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.w700, color: Color(0xFF2B2B2B)),
+          bodyLarge: TextStyle(fontFamily: 'Roboto', color: Color(0xFF4A4A4A)),
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF0F172A),
-          foregroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          foregroundColor: Color(0xFF2B2B2B),
           elevation: 0,
           centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.white),
-          titleTextStyle: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800, letterSpacing: -0.5),
+          iconTheme: IconThemeData(color: Color(0xFF2B2B2B)),
+          titleTextStyle: TextStyle(color: Color(0xFF2B2B2B), fontSize: 22, fontWeight: FontWeight.w800, letterSpacing: -0.5),
         ),
         navigationBarTheme: NavigationBarThemeData(
-          backgroundColor: const Color(0xFF1E293B), // Lighter Navy
+          backgroundColor: Colors.white,
           indicatorColor: const Color(0xFFD4AF37).withOpacity(0.15),
           elevation: 10,
-          shadowColor: Colors.black.withOpacity(0.5),
+          shadowColor: Colors.black.withOpacity(0.05),
           iconTheme: MaterialStateProperty.resolveWith((states) {
             if (states.contains(MaterialState.selected)) return const IconThemeData(color: Color(0xFFD4AF37), size: 28);
-            return const IconThemeData(color: Color(0xFF94A3B8), size: 24); // Slate grey
+            return const IconThemeData(color: Color(0xFF8E8E93), size: 24);
           }),
           labelTextStyle: MaterialStateProperty.resolveWith((states) {
             if (states.contains(MaterialState.selected)) return const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.w700, fontSize: 13);
-            return const TextStyle(color: Color(0xFF94A3B8), fontWeight: FontWeight.w500, fontSize: 12);
+            return const TextStyle(color: Color(0xFF8E8E93), fontWeight: FontWeight.w500, fontSize: 12);
           }),
         ),
         useMaterial3: true,
