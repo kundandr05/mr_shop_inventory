@@ -30,7 +30,11 @@ class SupabaseService {
   // Upload Product Image
   static Future<String?> uploadProductImage(String fileName, Uint8List fileBytes) async {
     final path = 'product_images/$fileName';
-    await _supabase.storage.from('products').uploadBinary(path, fileBytes);
+    await _supabase.storage.from('products').uploadBinary(
+      path, 
+      fileBytes,
+      fileOptions: const FileOptions(contentType: 'image/jpeg'),
+    );
     return _supabase.storage.from('products').getPublicUrl(path);
   }
 
