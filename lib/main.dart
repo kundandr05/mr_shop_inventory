@@ -28,14 +28,30 @@ class InventoryApp extends StatelessWidget {
       title: 'Shop Inventory',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
+          brightness: Brightness.dark,
           seedColor: const Color(0xFFD4AF37), // Gold
           primary: const Color(0xFFD4AF37), // Gold
-          secondary: Colors.black87,
-          surface: Colors.grey[50]!,
+          secondary: const Color(0xFFD4AF37),
+          surface: const Color(0xFF121212), // Deep dark grey
+          background: Colors.black,
         ),
+        scaffoldBackgroundColor: Colors.black,
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.black,
           foregroundColor: Color(0xFFD4AF37), // Gold text on black app bar
+          elevation: 0,
+        ),
+        navigationBarTheme: NavigationBarThemeData(
+          backgroundColor: const Color(0xFF1E1E1E),
+          indicatorColor: const Color(0xFFD4AF37).withOpacity(0.3),
+          iconTheme: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.selected)) return const IconThemeData(color: Color(0xFFD4AF37));
+            return const IconThemeData(color: Colors.grey);
+          }),
+          labelTextStyle: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.selected)) return const TextStyle(color: Color(0xFFD4AF37), fontWeight: FontWeight.bold);
+            return const TextStyle(color: Colors.grey);
+          }),
         ),
         useMaterial3: true,
       ),

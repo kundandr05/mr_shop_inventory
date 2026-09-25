@@ -211,10 +211,10 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 300,
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFF1E1E1E),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+                BoxShadow(color: const Color(0xFFD4AF37).withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
               ],
             ),
             child: BarChart(
@@ -271,10 +271,10 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 250,
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: const Color(0xFF1E1E1E),
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+                  BoxShadow(color: const Color(0xFFD4AF37).withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
                 ],
               ),
               child: Row(
@@ -336,10 +336,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF1E1E1E),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: color.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10)),
+          BoxShadow(color: color.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
         ],
         border: Border.all(color: color.withOpacity(0.2), width: 2),
       ),

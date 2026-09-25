@@ -14,7 +14,7 @@ class SaleSuccessScreen extends StatelessWidget {
         : DateFormat('MMM d, y h:mm a').format(DateTime.now());
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Text('Sale Confirmation'),
         centerTitle: true,
@@ -57,7 +57,7 @@ class SaleSuccessScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 const Text(
                   'Sale Successful!',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 const SizedBox(height: 32),
                 
@@ -66,10 +66,10 @@ class SaleSuccessScreen extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: const Color(0xFF1E1E1E),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+                      BoxShadow(color: const Color(0xFFD4AF37).withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
                     ],
                   ),
                   child: Column(

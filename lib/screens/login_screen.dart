@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
             margin: const EdgeInsets.all(24),
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFF1E1E1E),
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(color: const Color(0xFFD4AF37).withOpacity(0.2), blurRadius: 30, offset: const Offset(0, 10))
@@ -67,19 +67,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 24),
                 Text(
                   _isSignUp ? 'Create Account' : 'Welcome Back',
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
+                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFFD4AF37)),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'MR Mobile Accessories',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                  style: TextStyle(color: Colors.grey[400], fontSize: 16),
                 ),
                 const SizedBox(height: 32),
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'Email',
-                    prefixIcon: const Icon(Icons.email, color: Colors.black54),
+                    prefixIcon: const Icon(Icons.email, color: Color(0xFFD4AF37)),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -93,9 +93,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     labelText: 'Password',
-                    prefixIcon: const Icon(Icons.lock, color: Colors.black54),
+                    prefixIcon: const Icon(Icons.lock, color: Color(0xFFD4AF37)),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off, color: Colors.black54),
+                      icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off, color: Colors.grey),
                       onPressed: () {
                         setState(() {
                           _obscurePassword = !_obscurePassword;

@@ -59,13 +59,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
+          style: const TextStyle(color: Colors.white),
+          cursorColor: const Color(0xFFD4AF37),
           decoration: InputDecoration(
-            hintText: 'Search stock...',
+            hintText: 'Search stock by name, brand, or code...',
+            hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
             border: InputBorder.none,
-            icon: const Icon(Icons.search),
+            icon: const Icon(Icons.search, color: Color(0xFFD4AF37)),
             suffixIcon: _searchQuery.isNotEmpty
                 ? IconButton(
-                    icon: const Icon(Icons.clear),
+                    icon: const Icon(Icons.clear, color: Colors.white),
                     onPressed: () => setState(() => _searchQuery = ''),
                   )
                 : null,
@@ -121,8 +124,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         : Container(
                             width: 50,
                             height: 50,
-                            decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
-                            child: Icon(Icons.image, color: Colors.grey[400]),
+                            decoration: BoxDecoration(color: Colors.grey[800], borderRadius: BorderRadius.circular(8)),
+                            child: Icon(Icons.image, color: Colors.grey[500]),
                           ),
                     title: Text(product['name']),
                     subtitle: Text('${product['product_code']} | ${product['brand'] ?? 'No Brand'}'),
@@ -267,9 +270,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         height: 120,
                         width: 120,
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: Colors.grey[800],
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey[400]!),
+                          border: Border.all(color: Colors.grey[700]!),
                         ),
                         child: selectedImageBytes != null
                             ? ClipRRect(
