@@ -89,7 +89,7 @@ class SupabaseService {
         .from('units')
         .update({
           'status': 'sold',
-          'sold_at': DateTime.now().toIso8601String()
+          'sold_at': DateTime.now().toUtc().toIso8601String()
         })
         .eq('qr_code', qrCode)
         .select()

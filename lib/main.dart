@@ -44,18 +44,27 @@ class InventoryApp extends StatelessWidget {
   }
 }
 
-class AuthGate extends StatelessWidget {
+class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
 
+  @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AuthState>(
       stream: Supabase.instance.client.auth.onAuthStateChange,
+      initialData: AuthState(
+        'INITIAL',
+        Supabase.instance.client.auth.currentSession,
+      ),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
           return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
-        final session = snapshot.hasData ? snapshot.data!.session : null;
+        final session = snapshot.data?.session;
         if (session != null) {
           return const MainLayout();
         }

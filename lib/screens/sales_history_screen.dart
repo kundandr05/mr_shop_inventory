@@ -5,6 +5,9 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+import 'package:share_plus/share_plus.dart';
+import 'dart:convert';
+
 class SalesHistoryScreen extends StatefulWidget {
   const SalesHistoryScreen({super.key});
 
@@ -93,12 +96,37 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
     await Printing.sharePdf(bytes: await pdf.save(), filename: 'sales_history.pdf');
   }
 
+  Future<void> _exportHistoryCsv() async {
+    final headers = ['Product', 'Barcode', 'Price', 'Sold Date'];
+    final rows = _sales.map((sale) {
+      final product = sale['products'];
+      final soldAt = sale['sold_at'] != null 
+          ? DateFormat('MMM d, y h:mm a').format(DateTime.parse(sale['sold_at']).toLocal())
+          : '-';
+      return [
+        '"${product['name'].toString().replaceAll('"', '""')}"',
+        '"${sale['qr_code'].toString().replaceAll('"', '""')}"',
+        '"${product['price']}"',
+        '"$soldAt"',
+      ].join(',');
+    });
+
+    final csvData = [headers.join(','), ...rows].join('\n');
+    final bytes = utf8.encode(csvData);
+    
+    await Share.shareXFiles(
+      [XFile.fromData(bytes, mimeType: 'text/csv', name: 'sales_history.csv')],
+      text: 'Sales History Export',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sales History & Returns'),
         actions: [
+          IconButton(icon: const Icon(Icons.table_chart), onPressed: _exportHistoryCsv, tooltip: 'Export Excel/CSV'),
           IconButton(icon: const Icon(Icons.picture_as_pdf), onPressed: _exportHistoryPdf, tooltip: 'Export PDF'),
           IconButton(icon: const Icon(Icons.refresh), onPressed: _loadSales),
         ],
