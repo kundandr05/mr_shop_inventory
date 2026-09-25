@@ -14,6 +14,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalProducts = 0;
   int totalStock = 0;
   double totalRevenue = 0.0;
+  double totalExpenses = 0.0;
+  double netProfit = 0.0;
   List<double> weeklySales = List.filled(7, 0.0);
   DateTime startOfWeek = DateTime.now();
   List<dynamic> lowStockProducts = [];
@@ -29,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final products = await SupabaseService.getProducts();
       final soldUnits = await SupabaseService.getSoldUnits();
+      final expenses = await SupabaseService.getExpenses();
       
       int stockCount = 0;
       List<dynamic> lowStock = [];
@@ -60,6 +63,11 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         }
       }
+
+      double exp = 0;
+      for (var expense in expenses) {
+        exp += (expense['amount'] as num).toDouble();
+      }
       
       if (mounted) {
         setState(() {
@@ -67,6 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
           totalStock = stockCount;
           lowStockProducts = lowStock;
           totalRevenue = rev;
+          totalExpenses = exp;
+          netProfit = rev - exp;
           weeklySales = wSales;
           _isLoading = false;
         });
@@ -74,6 +84,38 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  void _showAddExpenseDialog() {
+    final descCtrl = TextEditingController();
+    final amountCtrl = TextEditingController();
+    
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Log New Expense'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: descCtrl, decoration: const InputDecoration(labelText: 'Description (e.g. Rent, Stock)')),
+            TextField(controller: amountCtrl, decoration: const InputDecoration(labelText: 'Amount (₹)'), keyboardType: TextInputType.number),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () async {
+              if (descCtrl.text.isEmpty || amountCtrl.text.isEmpty) return;
+              Navigator.pop(ctx);
+              setState(() => _isLoading = true);
+              await SupabaseService.addExpense(descCtrl.text, double.tryParse(amountCtrl.text) ?? 0.0);
+              _loadStats();
+            },
+            child: const Text('Save Expense'),
+          ),
+        ],
+      )
+    );
   }
 
   @override
@@ -113,10 +155,35 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Expanded(
                 child: _buildStatCard(
-                  title: 'Total Revenue',
+                  title: 'Gross Revenue',
                   value: '₹${totalRevenue.toStringAsFixed(0)}',
-                  icon: Icons.currency_rupee,
+                  icon: Icons.account_balance_wallet,
                   color: Colors.purple,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildStatCard(
+                  title: 'Net Profit',
+                  value: '₹${netProfit.toStringAsFixed(0)}',
+                  icon: Icons.trending_up,
+                  color: netProfit >= 0 ? Colors.green : Colors.red,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: _showAddExpenseDialog,
+                  child: _buildStatCard(
+                    title: 'Total Expenses ➕',
+                    value: '₹${totalExpenses.toStringAsFixed(0)}',
+                    icon: Icons.money_off,
+                    color: Colors.orange,
+                  ),
                 ),
               ),
               const SizedBox(width: 16),

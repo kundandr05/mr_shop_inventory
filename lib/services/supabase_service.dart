@@ -128,6 +128,24 @@ class SupabaseService {
         .timeout(const Duration(seconds: 8));
     return response;
   }
+
+  // 7. Expense Tracking
+  static Future<List<dynamic>> getExpenses() async {
+    final response = await _supabase
+        .from('expenses')
+        .select()
+        .order('expense_date', ascending: false)
+        .timeout(const Duration(seconds: 8));
+    return response;
+  }
+
+  static Future<void> addExpense(String description, double amount) async {
+    await _supabase.from('expenses').insert({
+      'description': description,
+      'amount': amount,
+      'expense_date': DateTime.now().toUtc().toIso8601String(),
+    }).timeout(const Duration(seconds: 8));
+  }
 }
 
 extension on List {
