@@ -38,17 +38,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  String _searchQuery = '';
+
+  List<dynamic> get _filteredProducts {
+    if (_searchQuery.isEmpty) return _products;
+    return _products.where((p) {
+      final name = p['name'].toString().toLowerCase();
+      final brand = (p['brand']?.toString() ?? '').toLowerCase();
+      final code = (p['product_code']?.toString() ?? '').toLowerCase();
+      final q = _searchQuery.toLowerCase();
+      return name.contains(q) || brand.contains(q) || code.contains(q);
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: TextField(
+          decoration: InputDecoration(
+            hintText: 'Search stock...',
+            border: InputBorder.none,
+            icon: const Icon(Icons.search),
+            suffixIcon: _searchQuery.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () => setState(() => _searchQuery = ''),
+                  )
+                : null,
+          ),
+          onChanged: (value) => setState(() => _searchQuery = value),
+        ),
+      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: _loadProducts,
               child: ListView.builder(
-                itemCount: _products.length,
+                itemCount: _filteredProducts.length,
                 itemBuilder: (context, index) {
-                  final product = _products[index];
+                  final product = _filteredProducts[index];
                   final inStock = product['in_stock_count'] ?? 0;
                 
                 return Card(
