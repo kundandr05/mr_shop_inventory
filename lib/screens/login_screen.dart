@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50], // Premium Light Background
+      backgroundColor: const Color(0xFF0F172A), // Deep Navy
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -54,10 +54,10 @@ class _LoginScreenState extends State<LoginScreen> {
             margin: const EdgeInsets.all(24),
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFF1E293B), // Lighter Navy
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 30, offset: const Offset(0, 10))
+                BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 40, offset: const Offset(0, 15))
               ],
             ),
             child: Column(
@@ -67,20 +67,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 24),
                 Text(
                   _isSignUp ? 'Create Account' : 'Welcome Back',
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
+                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 const SizedBox(height: 8),
-                Text(
+                const Text(
                   'MR Mobile Accessories',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                  style: TextStyle(color: Color(0xFF94A3B8), fontSize: 16), // Slate Grey
                 ),
                 const SizedBox(height: 32),
                 TextField(
                   controller: _emailController,
+                  style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     labelText: 'Email',
+                    labelStyle: const TextStyle(color: Color(0xFF94A3B8)),
                     prefixIcon: const Icon(Icons.email, color: Color(0xFFD4AF37)),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF334155))),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: const BorderSide(color: Color(0xFFD4AF37), width: 2), // Gold
@@ -91,11 +94,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
+                  style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     labelText: 'Password',
+                    labelStyle: const TextStyle(color: Color(0xFF94A3B8)),
                     prefixIcon: const Icon(Icons.lock, color: Color(0xFFD4AF37)),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off, color: Colors.grey),
+                      icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off, color: const Color(0xFF94A3B8)),
                       onPressed: () {
                         setState(() {
                           _obscurePassword = !_obscurePassword;
@@ -103,6 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF334155))),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: const BorderSide(color: Color(0xFFD4AF37), width: 2), // Gold

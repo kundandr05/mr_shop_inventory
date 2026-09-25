@@ -71,7 +71,7 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: const Color(0xFF0F172A), // Deep Navy
       appBar: AppBar(title: const Text('Scan to Sell')),
       body: SingleChildScrollView(
         child: Padding(
@@ -79,10 +79,10 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
           child: Container(
             padding: const EdgeInsets.all(40),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFF1E293B), // Lighter Navy
               borderRadius: BorderRadius.circular(32),
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 40, offset: const Offset(0, 15)),
+                BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 40, offset: const Offset(0, 15)),
               ],
             ),
             child: Column(
@@ -91,7 +91,7 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD4AF37).withOpacity(0.1),
+                    color: const Color(0xFFD4AF37).withOpacity(0.15),
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(Icons.qr_code_scanner, size: 80, color: Color(0xFFD4AF37)),
@@ -99,13 +99,13 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
                 const SizedBox(height: 32),
                 const Text(
                   'Ready to scan items?',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: Color(0xFF2B2B2B), letterSpacing: -0.5),
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: -0.5),
                 ),
                 const SizedBox(height: 8),
                 const Text(
                   'Tap the button below to open the camera scanner.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 16, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 48),
                 SizedBox(
@@ -116,7 +116,7 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
                     label: const Text('Open Scanner', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFD4AF37), // Gold
-                      foregroundColor: Colors.white,
+                      foregroundColor: const Color(0xFF0F172A),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       elevation: 0,
                     ),
@@ -126,24 +126,25 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
                 const SizedBox(height: 48),
                 Row(
                   children: [
-                    Expanded(child: Divider(color: Colors.grey[200])),
+                    Expanded(child: Divider(color: const Color(0xFF334155))),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Text('OR ENTER MANUALLY', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1)),
+                      child: Text('OR ENTER MANUALLY', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8), letterSpacing: 1)),
                     ),
-                    Expanded(child: Divider(color: Colors.grey[200])),
+                    Expanded(child: Divider(color: const Color(0xFF334155))),
                   ],
                 ),
                 const SizedBox(height: 32),
                 TextField(
                   controller: _manualController,
+                  style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: 'Type code and press enter',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
+                    hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                     filled: true,
-                    fillColor: const Color(0xFFF8F9FA),
-                    prefixIcon: const Icon(Icons.keyboard, color: Colors.grey),
+                    fillColor: const Color(0xFF0F172A),
+                    prefixIcon: const Icon(Icons.keyboard, color: Color(0xFF94A3B8)),
                   ),
                   onSubmitted: (value) {
                     if (value.isNotEmpty) {

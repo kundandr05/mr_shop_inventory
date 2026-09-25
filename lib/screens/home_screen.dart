@@ -211,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 320,
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFF1E293B),
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 40, offset: const Offset(0, 15)),
@@ -271,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 280,
               padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: const Color(0xFF1E293B),
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 40, offset: const Offset(0, 15)),
@@ -336,12 +336,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF1E293B),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: color.withOpacity(0.06), blurRadius: 30, offset: const Offset(0, 15)),
+          BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 30, offset: const Offset(0, 15)),
         ],
-        border: Border.all(color: color.withOpacity(0.1), width: 1.5),
+        border: Border.all(color: const Color(0xFF334155), width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withOpacity(0.15),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, size: 28, color: color),
@@ -360,9 +360,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           const Spacer(),
-          Text(value, style: TextStyle(fontSize: 34, fontWeight: FontWeight.w900, color: const Color(0xFF2B2B2B), letterSpacing: -1)),
+          Text(value, style: const TextStyle(fontSize: 34, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: -1)),
           const SizedBox(height: 4),
-          Text(title, style: TextStyle(fontSize: 15, color: Colors.grey[600], fontWeight: FontWeight.w600, letterSpacing: 0.2)),
+          Text(title, style: const TextStyle(fontSize: 15, color: Color(0xFF94A3B8), fontWeight: FontWeight.w600, letterSpacing: 0.2)),
         ],
       ),
     );

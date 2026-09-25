@@ -59,16 +59,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
-          style: const TextStyle(color: Colors.black87),
+          style: const TextStyle(color: Colors.white),
           cursorColor: const Color(0xFFD4AF37),
           decoration: InputDecoration(
             hintText: 'Search stock by name, brand, or code...',
-            hintStyle: TextStyle(color: Colors.black54),
+            hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
             border: InputBorder.none,
             icon: const Icon(Icons.search, color: Color(0xFFD4AF37)),
             suffixIcon: _searchQuery.isNotEmpty
                 ? IconButton(
-                    icon: const Icon(Icons.clear, color: Colors.black54),
+                    icon: const Icon(Icons.clear, color: Color(0xFF94A3B8)),
                     onPressed: () => setState(() => _searchQuery = ''),
                   )
                 : null,
@@ -124,8 +124,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         : Container(
                             width: 50,
                             height: 50,
-                            decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(8)),
-                            child: Icon(Icons.image, color: Colors.grey[400]),
+                            decoration: BoxDecoration(color: const Color(0xFF0F172A), borderRadius: BorderRadius.circular(8)),
+                            child: const Icon(Icons.image, color: Color(0xFF94A3B8)),
                           ),
                     title: Text(product['name']),
                     subtitle: Text('${product['product_code']} | ${product['brand'] ?? 'No Brand'}'),
@@ -270,9 +270,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         height: 120,
                         width: 120,
                         decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                          color: const Color(0xFF0F172A),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey[400]!),
+                          border: Border.all(color: const Color(0xFF334155)),
                         ),
                         child: selectedImageBytes != null
                             ? ClipRRect(

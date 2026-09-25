@@ -14,7 +14,7 @@ class SaleSuccessScreen extends StatelessWidget {
         : DateFormat('MMM d, y h:mm a').format(DateTime.now());
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: const Color(0xFF0F172A),
       appBar: AppBar(
         title: const Text('Sale Confirmation'),
         centerTitle: true,
@@ -34,7 +34,7 @@ class SaleSuccessScreen extends StatelessWidget {
                         height: 120,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.green, width: 4),
+                          border: Border.all(color: Color(0xFFD4AF37), width: 4),
                           image: DecorationImage(
                             image: NetworkImage(product['image_url']),
                             fit: BoxFit.cover,
@@ -44,20 +44,20 @@ class SaleSuccessScreen extends StatelessWidget {
                           alignment: Alignment.bottomRight,
                           child: const CircleAvatar(
                             radius: 16,
-                            backgroundColor: Colors.green,
+                            backgroundcolor: Color(0xFFD4AF37),
                             child: Icon(Icons.check, size: 20, color: Colors.white),
                           ),
                         ),
                       )
                     : const CircleAvatar(
                         radius: 50,
-                        backgroundColor: Colors.green,
+                        backgroundcolor: Color(0xFFD4AF37),
                         child: Icon(Icons.check, size: 60, color: Colors.white),
                       ),
                 const SizedBox(height: 24),
                 const Text(
                   'Sale Successful!',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black87),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
                 const SizedBox(height: 32),
                 
@@ -66,10 +66,10 @@ class SaleSuccessScreen extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: const Color(0xFF1E293B),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+                      BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 10)),
                     ],
                   ),
                   child: Column(
@@ -78,24 +78,24 @@ class SaleSuccessScreen extends StatelessWidget {
                       const Center(
                         child: Text(
                           'RECEIPT',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 2, color: Colors.grey),
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 2, color: Color(0xFF94A3B8)),
                         ),
                       ),
-                      const Divider(height: 32, thickness: 2),
+                      const Divider(height: 32, thickness: 2, color: Color(0xFF334155)),
                       _buildReceiptRow('Product', product['name'].toString()),
                       _buildReceiptRow('Brand', product['brand']?.toString() ?? 'N/A'),
                       _buildReceiptRow('Barcode', unit['qr_code'].toString()),
                       if (unit['received_date'] != null)
                         _buildReceiptRow('Entry Date', DateFormat('MMM d, y').format(DateTime.parse(unit['received_date']))),
                       _buildReceiptRow('Sold Date', soldAt),
-                      const Divider(height: 32, thickness: 2),
+                      const Divider(height: 32, thickness: 2, color: Color(0xFF334155)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('TOTAL', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                          const Text('TOTAL', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
                           Text(
                             '₹${product['price']}',
-                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
+                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFFD4AF37)),
                           ),
                         ],
                       ),
@@ -114,11 +114,11 @@ class SaleSuccessScreen extends StatelessWidget {
                       Navigator.pop(context); // Go back to scanner
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
+                      backgroundColor: const Color(0xFFD4AF37),
+                      foregroundColor: const Color(0xFF0F172A),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: const Text('Scan Next Item', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    child: const Text('Scan Next Item', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
                 ),
               ],
@@ -135,7 +135,7 @@ class SaleSuccessScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontSize: 16, color: Colors.grey)),
+          Text(label, style: const TextStyle(fontSize: 16, color: Color(0xFF94A3B8))),
           Expanded(
             child: Text(
               value,
