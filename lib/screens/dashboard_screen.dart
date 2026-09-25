@@ -54,10 +54,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
-                    leading: product['image_url'] != null
+                    leading: product['image_url'] != null && product['image_url'].toString().isNotEmpty
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.network(product['image_url'], width: 50, height: 50, fit: BoxFit.cover),
+                            child: Image.network(
+                              product['image_url'], 
+                              width: 50, 
+                              height: 50, 
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                print('Image load error: $error');
+                                return Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(color: Colors.red[100], borderRadius: BorderRadius.circular(8)),
+                                  child: Icon(Icons.broken_image, color: Colors.red[400]),
+                                );
+                              },
+                            ),
                           )
                         : Container(
                             width: 50,
