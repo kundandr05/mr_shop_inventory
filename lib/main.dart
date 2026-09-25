@@ -56,12 +56,6 @@ class InventoryApp extends StatelessWidget {
             return const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500);
           }),
         ),
-        cardTheme: CardTheme(
-          color: Colors.white,
-          elevation: 2,
-          shadowColor: Colors.black.withOpacity(0.1),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        ),
         useMaterial3: true,
       ),
       home: const AuthGate(),
