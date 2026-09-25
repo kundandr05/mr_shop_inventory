@@ -83,6 +83,7 @@ class MainLayout extends StatefulWidget {
 
 class _MainLayoutState extends State<MainLayout> {
   int _currentIndex = 0;
+  late final RealtimeChannel _unitsChannel;
 
   final List<Widget> _screens = [
     const HomeScreen(),
@@ -91,6 +92,57 @@ class _MainLayoutState extends State<MainLayout> {
     const ScanSaleScreen(),
     const SalesHistoryScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _setupRealtime();
+  }
+
+  void _setupRealtime() {
+    _unitsChannel = Supabase.instance.client.channel('public:units');
+    
+    _unitsChannel.onPostgresChanges(
+      event: PostgresChangeEvent.all,
+      schema: 'public',
+      table: 'units',
+      callback: (payload) {
+        final eventType = payload.eventType;
+        final newRecord = payload.newRecord;
+        final oldRecord = payload.oldRecord;
+
+        if (eventType == PostgresChangeEvent.insert) {
+          if (newRecord['status'] == 'in_stock') {
+            _showNotification('📦 New stock generated! (Barcode: ${newRecord['qr_code']})');
+          }
+        } else if (eventType == PostgresChangeEvent.update) {
+          if (newRecord['status'] == 'sold' && oldRecord['status'] == 'in_stock') {
+            _showNotification('💰 Cha-ching! Item sold! (Barcode: ${newRecord['qr_code']})');
+          }
+        }
+      },
+    ).subscribe();
+  }
+
+  void _showNotification(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+          backgroundColor: const Color(0xFFD4AF37), // Gold
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 4),
+          margin: const EdgeInsets.all(16),
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    Supabase.instance.client.removeChannel(_unitsChannel);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
