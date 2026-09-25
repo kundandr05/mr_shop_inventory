@@ -85,7 +85,9 @@ class SaleSuccessScreen extends StatelessWidget {
                       _buildReceiptRow('Product', product['name'].toString()),
                       _buildReceiptRow('Brand', product['brand']?.toString() ?? 'N/A'),
                       _buildReceiptRow('Barcode', unit['qr_code'].toString()),
-                      _buildReceiptRow('Date', soldAt),
+                      if (unit['received_date'] != null)
+                        _buildReceiptRow('Entry Date', DateFormat('MMM d, y').format(DateTime.parse(unit['received_date']))),
+                      _buildReceiptRow('Sold Date', soldAt),
                       const Divider(height: 32, thickness: 2),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

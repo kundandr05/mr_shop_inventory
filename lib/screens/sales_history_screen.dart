@@ -125,16 +125,21 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
   }
 
   Future<void> _exportHistoryCsv() async {
-    final headers = ['Product', 'Barcode', 'Price', 'Sold Date'];
+    final headers = ['Product', 'Brand', 'Barcode', 'Price', 'Entry Date', 'Sold Date'];
     final rows = _sales.map((sale) {
       final product = sale['products'];
       final soldAt = sale['sold_at'] != null 
           ? DateFormat('MMM d, y h:mm a').format(DateTime.parse(sale['sold_at']).toLocal())
           : '-';
+      final entryDate = sale['received_date'] != null
+          ? DateFormat('MMM d, y').format(DateTime.parse(sale['received_date']))
+          : '-';
       return [
         '"${product['name'].toString().replaceAll('"', '""')}"',
+        '"${product['brand']?.toString().replaceAll('"', '""') ?? 'N/A'}"',
         '"${sale['qr_code'].toString().replaceAll('"', '""')}"',
         '"${product['price']}"',
+        '"$entryDate"',
         '"$soldAt"',
       ].join(',');
     });
@@ -190,6 +195,9 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
                 final soldAt = sale['sold_at'] != null 
                     ? DateFormat('MMM d, y h:mm a').format(DateTime.parse(sale['sold_at']).toLocal())
                     : 'Unknown Time';
+                final entryDate = sale['received_date'] != null
+                    ? DateFormat('MMM d, y').format(DateTime.parse(sale['received_date']))
+                    : 'Unknown Date';
 
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -202,12 +210,26 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
                         ),
                       );
                     },
-                    leading: const CircleAvatar(
-                      backgroundColor: Colors.green,
-                      child: Icon(Icons.check, color: Colors.white),
-                    ),
+                    leading: product['image_url'] != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(product['image_url'], width: 50, height: 50, fit: BoxFit.cover),
+                          )
+                        : const CircleAvatar(
+                            backgroundColor: Colors.green,
+                            child: Icon(Icons.check, color: Colors.white),
+                          ),
                     title: Text('${product['name']}'),
-                    subtitle: Text('Code: ${sale['qr_code']}\nSold: $soldAt'),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Code: ${sale['qr_code']}'),
+                          Text('Entry: $entryDate\nSold: $soldAt', style: const TextStyle(fontSize: 12)),
+                        ],
+                      ),
+                    ),
                     isThreeLine: true,
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
