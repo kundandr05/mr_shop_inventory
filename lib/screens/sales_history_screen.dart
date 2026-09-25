@@ -91,16 +91,21 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
   Future<void> _exportHistoryPdf() async {
     final pdf = pw.Document();
     
-    final headers = ['Product', 'Barcode', 'Price', 'Sold Date'];
+    final headers = ['Product', 'Brand', 'Barcode', 'Price', 'Entry Date', 'Sold Date'];
     final data = _sales.map((sale) {
       final product = sale['products'];
       final soldAt = sale['sold_at'] != null 
           ? DateFormat('MMM d, y h:mm a').format(DateTime.parse(sale['sold_at']).toLocal())
           : '-';
+      final entryDate = sale['received_date'] != null
+          ? DateFormat('MMM d, y').format(DateTime.parse(sale['received_date']))
+          : '-';
       return [
         product['name'].toString(),
+        product['brand']?.toString() ?? 'N/A',
         sale['qr_code'].toString(),
         'Rs. ${product['price']}',
+        entryDate,
         soldAt,
       ];
     }).toList();
@@ -121,7 +126,15 @@ class _SalesHistoryScreenState extends State<SalesHistoryScreen> {
       ),
     );
 
-    await Printing.sharePdf(bytes: await pdf.save(), filename: 'sales_history.pdf');
+    final bytes = await pdf.save();
+    if (kIsWeb) {
+      downloadPdfWeb(bytes, 'sales_history.pdf');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Download started!')));
+      }
+    } else {
+      await Printing.sharePdf(bytes: bytes, filename: 'sales_history.pdf');
+    }
   }
 
   Future<void> _exportHistoryCsv() async {
