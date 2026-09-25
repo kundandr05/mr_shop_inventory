@@ -190,7 +190,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     GestureDetector(
                       onTap: () async {
                         final picker = ImagePicker();
-                        final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
+                        final pickedFile = await picker.pickImage(
+                          source: ImageSource.gallery, 
+                          imageQuality: 60,
+                          maxWidth: 600,
+                          maxHeight: 600,
+                        );
                         if (pickedFile != null) {
                           final bytes = await pickedFile.readAsBytes();
                           setDialogState(() {
