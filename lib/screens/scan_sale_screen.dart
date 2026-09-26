@@ -13,6 +13,23 @@ class ScanSaleScreen extends StatefulWidget {
 class _ScanSaleScreenState extends State<ScanSaleScreen> {
   bool _isProcessing = false;
   final TextEditingController _manualController = TextEditingController();
+  final FocusNode _manualFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-focus so physical scanners work immediately without clicking
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _manualFocusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _manualController.dispose();
+    _manualFocusNode.dispose();
+    super.dispose();
+  }
 
   Future<void> _startBarcodeScan() async {
     if (_isProcessing) return;
@@ -49,7 +66,11 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
           MaterialPageRoute(
             builder: (_) => SaleSuccessScreen(unit: result['unit']),
           ),
-        );
+        ).then((_) {
+          if (mounted) {
+            _manualFocusNode.requestFocus();
+          }
+        });
       }
     } catch (e) {
       if (mounted) {
@@ -137,9 +158,11 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
                 const SizedBox(height: 32),
                 TextField(
                   controller: _manualController,
+                  focusNode: _manualFocusNode,
+                  autofocus: true,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    hintText: 'Type code and press enter',
+                    hintText: 'Type code and press enter (or use physical scanner)',
                     hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                     filled: true,
@@ -150,6 +173,8 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
                     if (value.isNotEmpty) {
                       _processSale(value);
                       _manualController.clear();
+                      // Keep focus so they can keep scanning with a physical scanner
+                      _manualFocusNode.requestFocus();
                     }
                   },
                 ),
