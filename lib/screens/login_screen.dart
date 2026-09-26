@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please contact the administrator to reset your password.')));
                       },
-                      child: const Text('Forgot Password?', style: TextStyle(color: Colors.black87)),
+                      child: const Text('Forgot Password?', style: TextStyle(color: Color(0xFF94A3B8))),
                     ),
                   ),
                 ],
@@ -132,11 +132,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   height: 54,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
+                    /* style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       foregroundColor: const Color(0xFFD4AF37), // Gold Text
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      elevation: 5,
+                      elevation: 5, */
                     ),
                     onPressed: _isLoading ? null : _authenticate,
                     child: _isLoading 
@@ -149,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () => setState(() => _isSignUp = !_isSignUp),
                   child: Text(
                     _isSignUp ? 'Already have an account? Login' : 'Need an account? Sign Up',
-                    style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+                    style: const TextStyle(color: Color(0xFF94A3B8), fontWeight: FontWeight.w600),
                   ),
                 )
               ],
