@@ -145,34 +145,29 @@ class _MainLayoutState extends State<MainLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('MR Mobile Accessories', style: TextStyle(fontWeight: FontWeight.bold)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            tooltip: 'Logout',
-            onPressed: () async {
-              await Supabase.instance.client.auth.signOut();
-            },
-          )
-        ],
-      ),
+      backgroundColor: const Color(0xFF0F172A),
       body: _screens[_currentIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.inventory_2), label: 'Inventory'),
-          NavigationDestination(icon: Icon(Icons.add_box), label: 'Receive'),
-          NavigationDestination(icon: Icon(Icons.barcode_reader), label: 'Sell'),
-          NavigationDestination(icon: Icon(Icons.history), label: 'History'),
-        ],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 40, offset: const Offset(0, -10)),
+          ],
+        ),
+        child: NavigationBar(
+          backgroundColor: const Color(0xFF0F172A),
+          indicatorColor: const Color(0xFFD4AF37).withOpacity(0.2),
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (index) => setState(() => _currentIndex = index),
+          destinations: const [
+            NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home, color: Color(0xFFD4AF37)), label: 'Home'),
+            NavigationDestination(icon: Icon(Icons.inventory_2_outlined), selectedIcon: Icon(Icons.inventory_2, color: Color(0xFFD4AF37)), label: 'Inventory'),
+            NavigationDestination(icon: Icon(Icons.add_box_outlined), selectedIcon: Icon(Icons.add_box, color: Color(0xFFD4AF37)), label: 'Receive'),
+            NavigationDestination(icon: Icon(Icons.barcode_reader), selectedIcon: Icon(Icons.barcode_reader, color: Color(0xFFD4AF37)), label: 'Sell'),
+            NavigationDestination(icon: Icon(Icons.history_outlined), selectedIcon: Icon(Icons.history, color: Color(0xFFD4AF37)), label: 'History'),
+          ],
+        ),
       ),
     );
   }
 }
+
