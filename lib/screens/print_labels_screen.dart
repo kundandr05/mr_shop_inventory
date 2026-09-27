@@ -40,8 +40,8 @@ class PrintLabelsScreen extends StatelessWidget {
                   pw.BarcodeWidget(
                     barcode: pw.Barcode.code128(),
                     data: unit['qr_code'],
-                    width: 40 * PdfPageFormat.mm,
-                    height: 10 * PdfPageFormat.mm,
+                    width: 35 * PdfPageFormat.mm,
+                    height: 8 * PdfPageFormat.mm,
                     drawText: false,
                   ),
                   pw.SizedBox(height: 1),
