@@ -99,17 +99,37 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Log New Expense'),
+        backgroundColor: const Color(0xFF1E293B),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: const BorderSide(color: Color(0xFF334155))),
+        title: const Text('Log New Expense', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: descCtrl, decoration: const InputDecoration(labelText: 'Description (e.g. Rent, Stock)')),
-            TextField(controller: amountCtrl, decoration: const InputDecoration(labelText: 'Amount (₹)'), keyboardType: TextInputType.number),
+            TextField(
+              controller: descCtrl, 
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(labelText: 'Description (e.g. Rent, Stock)')
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: amountCtrl, 
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(labelText: 'Amount (Rs.)'), 
+              keyboardType: TextInputType.number
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx), 
+            child: const Text('Cancel', style: TextStyle(color: Color(0xFF94A3B8)))
+          ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFD4AF37),
+              foregroundColor: const Color(0xFF0F172A),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
             onPressed: () async {
               if (descCtrl.text.isEmpty || amountCtrl.text.isEmpty) return;
               Navigator.pop(ctx);
@@ -117,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
               await SupabaseService.addExpense(descCtrl.text, double.tryParse(amountCtrl.text) ?? 0.0);
               _loadStats();
             },
-            child: const Text('Save Expense'),
+            child: const Text('Save Expense', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       )
@@ -432,3 +452,5 @@ class _HomeScreenState extends State<HomeScreen> {
     return legends;
   }
 }
+
+
