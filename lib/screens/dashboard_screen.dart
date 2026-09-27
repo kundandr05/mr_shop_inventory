@@ -189,7 +189,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return;
       }
       if (mounted) {
-        final product = _inventory.firstWhere((p) => p['product_id'] == productId);
+        final product = _products.firstWhere((p) => p['product_id'] == productId);
         Navigator.push(context, MaterialPageRoute(builder: (_) => PrintLabelsScreen(units: units, product: product)));
       }
     } catch (e) {
