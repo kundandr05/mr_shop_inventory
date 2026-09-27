@@ -46,11 +46,12 @@ class _ReceiveStockScreenState extends State<ReceiveStockScreen> {
       final units = await SupabaseService.generateUnits(_selectedProductId!, quantity, null);
       
       if (mounted) {
+        final product = _products.firstWhere((p) => p['product_id'] == _selectedProductId);
         // Navigate to Print Labels screen
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => PrintLabelsScreen(units: units),
+            builder: (_) => PrintLabelsScreen(units: units, product: product),
           ),
         );
       }
