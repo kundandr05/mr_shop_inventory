@@ -11,43 +11,39 @@ class PrintLabelsScreen extends StatelessWidget {
   Future<pw.Document> _generatePdf(PdfPageFormat format) async {
     final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
 
-    // Creating a grid of QR codes for the units
-    pdf.addPage(
-      pw.MultiPage(
-        pageFormat: format,
-        build: (context) {
-          return [
-            pw.Wrap(
-              spacing: 20,
-              runSpacing: 20,
-              children: units.map((unit) {
-                return pw.Container(
-                  width: 160,
-                  child: pw.Column(
-                    mainAxisSize: pw.MainAxisSize.min,
-                    children: [
-                      pw.BarcodeWidget(
-                        barcode: pw.Barcode.code128(),
-                        data: unit['qr_code'],
-                        width: 160,
-                        height: 60,
-                        drawText: false,
-                      ),
-                      pw.SizedBox(height: 6),
-                      pw.Text(
-                        unit['qr_code'],
-                        style: const pw.TextStyle(fontSize: 10),
-                        textAlign: pw.TextAlign.center,
-                      ),
-                    ],
+    // Thermal Label Printer Size: 50x30mm
+    final stickerFormat = const PdfPageFormat(50 * PdfPageFormat.mm, 30 * PdfPageFormat.mm, marginAll: 2 * PdfPageFormat.mm);
+
+    for (var unit in units) {
+      pdf.addPage(
+        pw.Page(
+          pageFormat: stickerFormat,
+          build: (context) {
+            return pw.Center(
+              child: pw.Column(
+                mainAxisAlignment: pw.MainAxisAlignment.center,
+                crossAxisAlignment: pw.CrossAxisAlignment.center,
+                children: [
+                  pw.BarcodeWidget(
+                    barcode: pw.Barcode.code128(),
+                    data: unit['qr_code'],
+                    width: 45 * PdfPageFormat.mm,
+                    height: 15 * PdfPageFormat.mm,
+                    drawText: false,
                   ),
-                );
-              }).toList(),
-            ),
-          ];
-        },
-      ),
-    );
+                  pw.SizedBox(height: 2),
+                  pw.Text(
+                    unit['qr_code'],
+                    style: pw.TextStyle(fontSize: 8, fontWeight: pw.FontWeight.bold),
+                    textAlign: pw.TextAlign.center,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      );
+    }
 
     return pdf;
   }
@@ -55,8 +51,10 @@ class PrintLabelsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF0F172A),
       appBar: AppBar(title: const Text('Print Barcode Labels')),
       body: PdfPreview(
+        initialPageFormat: const PdfPageFormat(50 * PdfPageFormat.mm, 30 * PdfPageFormat.mm),
         build: (format) async {
           final doc = await _generatePdf(format);
           return doc.save();
