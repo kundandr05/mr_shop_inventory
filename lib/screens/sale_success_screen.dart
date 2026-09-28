@@ -163,6 +163,67 @@ class SaleSuccessScreen extends StatelessWidget {
               children: [
                 pw.Center(child: pw.Text('MR Mobile Accessories', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold))),
                 pw.Divider(),
+                pw.Text('Sold Time: ' + soldAt, style: const pw.TextStyle(fontSize: 12)),
+                if (unit['received_date'] != null)
+                  pw.Text('Entry Date: ' + DateFormat('MMM d, y').format(DateTime.parse(unit['received_date'])), style: const pw.TextStyle(fontSize: 12)),
+                pw.SizedBox(height: 10),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('Item', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                    pw.Text('Price', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  ]
+                ),
+                pw.Divider(),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Expanded(child: pw.Text(product['name'].toString())),
+                    pw.Text('Rs. ' + product['price'].toString()),
+                  ]
+                ),
+                pw.Divider(),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('Total', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
+                    pw.Text('Rs. ' + product['price'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
+                  ]
+                ),
+                pw.SizedBox(height: 20),
+                pw.Center(child: pw.Text('Thank you for shopping with us!', style: const pw.TextStyle(fontSize: 12))),
+                pw.SizedBox(height: 10),
+                pw.Center(child: pw.BarcodeWidget(
+                  barcode: pw.Barcode.code128(),
+                  data: unit['qr_code'],
+                  width: 150,
+                  height: 50,
+                  drawText: true,
+                )),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+      name: 'Bill_' + unit['qr_code'],
+    );
+  }
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.roll80,
+        build: (pw.Context context) {
+          return pw.Container(
+            padding: const pw.EdgeInsets.all(10),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Center(child: pw.Text('MR Mobile Accessories', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold))),
+                pw.Divider(),
                 pw.Text('Date: $soldAt', style: const pw.TextStyle(fontSize: 12)),
                 pw.SizedBox(height: 10),
                 pw.Row(
@@ -230,6 +291,8 @@ class SaleSuccessScreen extends StatelessWidget {
     );
   }
 }
+
+
 
 
 
