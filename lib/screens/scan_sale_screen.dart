@@ -43,7 +43,7 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
       );
 
       if (res is String && res != '-1' && res.isNotEmpty) {
-        _processSale(res);
+        _processSale(res.trim());
       }
     } catch (e) {
       if (mounted) {
@@ -168,6 +168,16 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
                     filled: true,
                     fillColor: const Color(0xFF0F172A),
                     prefixIcon: const Icon(Icons.keyboard, color: Color(0xFF94A3B8)),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.send, color: Color(0xFFD4AF37)),
+                      onPressed: () {
+                        if (_manualController.text.isNotEmpty) {
+                          _processSale(_manualController.text.trim());
+                          _manualController.clear();
+                          _manualFocusNode.requestFocus();
+                        }
+                      },
+                    ),
                   ),
                   onSubmitted: (value) {
                     if (value.isNotEmpty) {
@@ -190,3 +200,5 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
     );
   }
 }
+
+
