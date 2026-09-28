@@ -141,9 +141,6 @@ class SaleSuccessScreen extends StatelessWidget {
                     child: const Text('Scan Next Item', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
                 ),
-                    child: const Text('Scan Next Item', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-                  ),
-                ),
               ],
             ),
           ),
@@ -233,6 +230,7 @@ class SaleSuccessScreen extends StatelessWidget {
     );
   }
 }
+
 
 
 
