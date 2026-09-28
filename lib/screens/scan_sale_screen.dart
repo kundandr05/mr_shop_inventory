@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import '../services/supabase_service.dart';
 import 'sale_success_screen.dart';
@@ -14,6 +15,7 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
   bool _isProcessing = false;
   final TextEditingController _manualController = TextEditingController();
   final FocusNode _manualFocusNode = FocusNode();
+  Timer? _debounceTimer;
 
   @override
   void initState() {
@@ -28,6 +30,7 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
   void dispose() {
     _manualController.dispose();
     _manualFocusNode.dispose();
+    _debounceTimer?.cancel();
     super.dispose();
   }
 
@@ -179,11 +182,23 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
                       },
                     ),
                   ),
+                  onChanged: (value) {
+                    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+                    if (value.trim().isNotEmpty && value.contains('-')) {
+                      _debounceTimer = Timer(const Duration(milliseconds: 800), () {
+                        if (_manualController.text.isNotEmpty) {
+                          _processSale(_manualController.text.trim());
+                          _manualController.clear();
+                          _manualFocusNode.requestFocus();
+                        }
+                      });
+                    }
+                  },
                   onSubmitted: (value) {
+                    if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
                     if (value.isNotEmpty) {
                       _processSale(value.trim());
                       _manualController.clear();
-                      // Keep focus so they can keep scanning with a physical scanner
                       _manualFocusNode.requestFocus();
                     }
                   },
@@ -200,5 +215,7 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
     );
   }
 }
+
+
 
 
