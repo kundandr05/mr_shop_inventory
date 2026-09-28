@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -152,6 +153,14 @@ class SaleSuccessScreen extends StatelessWidget {
   Future<void> _printBill(BuildContext context, Map<String, dynamic> product, String soldAt) async {
     final pdf = pw.Document();
 
+    pw.MemoryImage? logoImage;
+    try {
+      final ByteData data = await rootBundle.load('assets/logo.png');
+      logoImage = pw.MemoryImage(data.buffer.asUint8List());
+    } catch (e) {
+      // Logo not found, continue without it
+    }
+
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.roll80,
@@ -161,11 +170,16 @@ class SaleSuccessScreen extends StatelessWidget {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
+                if (logoImage != null)
+                  pw.Center(
+                    child: pw.Image(logoImage, width: 60, height: 60),
+                  ),
+                if (logoImage != null) pw.SizedBox(height: 10),
                 pw.Center(child: pw.Text('MR Mobile Accessories', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold))),
                 pw.Divider(),
                 pw.Text('Sold Time: ' + soldAt, style: const pw.TextStyle(fontSize: 12)),
                 if (unit['received_date'] != null)
-                  pw.Text('Entry Date: ' + DateFormat('MMM d, y').format(DateTime.parse(unit['received_date'])), style: const pw.TextStyle(fontSize: 12)),
+                  pw.Text('Entry Time: ' + DateFormat('MMM d, y h:mm a').format(DateTime.parse(unit['received_date']).toLocal()), style: const pw.TextStyle(fontSize: 12)),
                 pw.SizedBox(height: 10),
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -232,6 +246,7 @@ class SaleSuccessScreen extends StatelessWidget {
     );
   }
 }
+
 
 
 
