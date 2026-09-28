@@ -171,7 +171,7 @@ class _ScanSaleScreenState extends State<ScanSaleScreen> {
                   ),
                   onSubmitted: (value) {
                     if (value.isNotEmpty) {
-                      _processSale(value);
+                      _processSale(value.trim());
                       _manualController.clear();
                       // Keep focus so they can keep scanning with a physical scanner
                       _manualFocusNode.requestFocus();

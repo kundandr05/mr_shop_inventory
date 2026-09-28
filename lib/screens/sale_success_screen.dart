@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class SaleSuccessScreen extends StatelessWidget {
   final Map<String, dynamic> unit;
@@ -105,7 +108,24 @@ class SaleSuccessScreen extends StatelessWidget {
                 
                 const SizedBox(height: 48),
                 
-                // Done Button
+                // Buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.picture_as_pdf, color: Color(0xFFD4AF37)),
+                        label: const Text('Print Bill', style: TextStyle(color: Color(0xFFD4AF37))),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          side: const BorderSide(color: Color(0xFFD4AF37)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        onPressed: () => _printBill(context, product, soldAt),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -121,11 +141,76 @@ class SaleSuccessScreen extends StatelessWidget {
                     child: const Text('Scan Next Item', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
                 ),
+                    child: const Text('Scan Next Item', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _printBill(BuildContext context, Map<String, dynamic> product, String soldAt) async {
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.roll80,
+        build: (pw.Context context) {
+          return pw.Container(
+            padding: const pw.EdgeInsets.all(10),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Center(child: pw.Text('MR Mobile Accessories', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold))),
+                pw.Divider(),
+                pw.Text('Date: $soldAt', style: const pw.TextStyle(fontSize: 12)),
+                pw.SizedBox(height: 10),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('Item', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                    pw.Text('Price', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  ]
+                ),
+                pw.Divider(),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Expanded(child: pw.Text('')),
+                    pw.Text('Rs. '),
+                  ]
+                ),
+                pw.Divider(),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('Total', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
+                    pw.Text('Rs. ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
+                  ]
+                ),
+                pw.SizedBox(height: 20),
+                pw.Center(child: pw.Text('Thank you for shopping with us!', style: const pw.TextStyle(fontSize: 12))),
+                pw.SizedBox(height: 10),
+                pw.Center(child: pw.BarcodeWidget(
+                  barcode: pw.Barcode.code128(),
+                  data: unit['qr_code'],
+                  width: 150,
+                  height: 50,
+                  drawText: true,
+                )),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+      name: 'Bill_',
     );
   }
 
@@ -148,3 +233,6 @@ class SaleSuccessScreen extends StatelessWidget {
     );
   }
 }
+
+
+
