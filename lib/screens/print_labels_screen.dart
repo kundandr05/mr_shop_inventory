@@ -40,8 +40,8 @@ class PrintLabelsScreen extends StatelessWidget {
                   pw.BarcodeWidget(
                     barcode: pw.Barcode.code128(),
                     data: unit['qr_code'],
-                    width: 35 * PdfPageFormat.mm,
-                    height: 8 * PdfPageFormat.mm,
+                    width: 32 * PdfPageFormat.mm,
+                    height: 7.5 * PdfPageFormat.mm,
                     drawText: false,
                   ),
                   pw.SizedBox(height: 1),
@@ -67,7 +67,12 @@ class PrintLabelsScreen extends StatelessWidget {
       backgroundColor: const Color(0xFF0F172A),
       appBar: AppBar(title: const Text('Print Barcode Labels')),
       body: PdfPreview(
-        initialPageFormat: const PdfPageFormat(50 * PdfPageFormat.mm, 30 * PdfPageFormat.mm),
+        canChangePageFormat: false,
+        canChangeOrientation: false,
+        pageFormats: const {
+          '50x25mm': PdfPageFormat(50 * PdfPageFormat.mm, 25 * PdfPageFormat.mm, marginAll: 1 * PdfPageFormat.mm),
+        },
+        initialPageFormat: const PdfPageFormat(50 * PdfPageFormat.mm, 25 * PdfPageFormat.mm, marginAll: 1 * PdfPageFormat.mm),
         build: (format) async {
           final doc = await _generatePdf(format);
           return doc.save();

@@ -113,15 +113,32 @@ class SaleSuccessScreen extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: OutlinedButton.icon(
-                        icon: const Icon(Icons.picture_as_pdf, color: Color(0xFFD4AF37)),
-                        label: const Text('Print Bill', style: TextStyle(color: Color(0xFFD4AF37))),
-                        style: OutlinedButton.styleFrom(
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.print, color: Color(0xFF0F172A)),
+                        label: const Text('Print Sticker Bill (50x25mm)', style: TextStyle(color: Color(0xFF0F172A), fontWeight: FontWeight.bold)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFD4AF37),
                           padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        onPressed: () => _printStickerBill(context, product, soldAt),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.receipt_long, color: Color(0xFFD4AF37)),
+                        label: const Text('Print Receipt (58mm Paper)', style: TextStyle(color: Color(0xFFD4AF37))),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
                           side: const BorderSide(color: Color(0xFFD4AF37)),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
-                        onPressed: () => _printBill(context, product, soldAt),
+                        onPressed: () => _printFullReceipt(context, product, soldAt),
                       ),
                     ),
                   ],
@@ -135,11 +152,12 @@ class SaleSuccessScreen extends StatelessWidget {
                       Navigator.pop(context); // Go back to scanner
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFD4AF37),
-                      foregroundColor: const Color(0xFF0F172A),
+                      backgroundColor: const Color(0xFF1E293B),
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: Color(0xFF334155)),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
-                    child: const Text('Scan Next Item', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                    child: const Text('Scan Next Item', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                   ),
                 ),
               ],
@@ -150,7 +168,62 @@ class SaleSuccessScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _printBill(BuildContext context, Map<String, dynamic> product, String soldAt) async {
+  Future<void> _printStickerBill(BuildContext context, Map<String, dynamic> product, String soldAt) async {
+    final pdf = pw.Document();
+
+    const stickerFormat = PdfPageFormat(50 * PdfPageFormat.mm, 25 * PdfPageFormat.mm, marginAll: 1.2 * PdfPageFormat.mm);
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: stickerFormat,
+        build: (pw.Context context) {
+          return pw.Column(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: pw.CrossAxisAlignment.center,
+            children: [
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text('MR MOBILE ACCESSORIES', style: pw.TextStyle(fontSize: 6.5, fontWeight: pw.FontWeight.bold)),
+                  pw.Text('Rs. ${product['price']}', style: pw.TextStyle(fontSize: 7.5, fontWeight: pw.FontWeight.bold)),
+                ],
+              ),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Expanded(
+                    child: pw.Text('${product['name']}', style: pw.TextStyle(fontSize: 6.5, fontWeight: pw.FontWeight.bold), maxLines: 1),
+                  ),
+                  pw.Text('PAID / SOLD', style: pw.TextStyle(fontSize: 5.5, fontWeight: pw.FontWeight.bold)),
+                ],
+              ),
+              pw.BarcodeWidget(
+                barcode: pw.Barcode.code128(),
+                data: unit['qr_code'],
+                width: 32 * PdfPageFormat.mm,
+                height: 7 * PdfPageFormat.mm,
+                drawText: false,
+              ),
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text(unit['qr_code'], style: const pw.TextStyle(fontSize: 5)),
+                  pw.Text(soldAt, style: const pw.TextStyle(fontSize: 5)),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+      name: 'Sticker_Bill_' + unit['qr_code'],
+    );
+  }
+
+  Future<void> _printFullReceipt(BuildContext context, Map<String, dynamic> product, String soldAt) async {
     final pdf = pw.Document();
 
     pw.MemoryImage? logoImage;
@@ -161,59 +234,64 @@ class SaleSuccessScreen extends StatelessWidget {
       // Logo not found, continue without it
     }
 
+    const receiptFormat = PdfPageFormat(57 * PdfPageFormat.mm, double.infinity, marginAll: 2 * PdfPageFormat.mm);
+
     pdf.addPage(
       pw.Page(
-        pageFormat: PdfPageFormat.roll80,
+        pageFormat: receiptFormat,
         build: (pw.Context context) {
           return pw.Container(
-            padding: const pw.EdgeInsets.all(10),
+            padding: const pw.EdgeInsets.all(4),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 if (logoImage != null)
                   pw.Center(
-                    child: pw.Image(logoImage, width: 60, height: 60),
+                    child: pw.Image(logoImage, width: 45, height: 45),
                   ),
-                if (logoImage != null) pw.SizedBox(height: 10),
-                pw.Center(child: pw.Text('MR Mobile Accessories', style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold))),
-                pw.Divider(),
-                pw.Text('Sold Time: ' + soldAt, style: const pw.TextStyle(fontSize: 12)),
+                if (logoImage != null) pw.SizedBox(height: 6),
+                pw.Center(child: pw.Text('MR Mobile Accessories', style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold))),
+                pw.Divider(thickness: 0.5),
+                pw.Text('Sold: ' + soldAt, style: const pw.TextStyle(fontSize: 9)),
                 if (unit['received_date'] != null)
-                  pw.Text('Entry Time: ' + DateFormat('MMM d, y h:mm a').format(DateTime.parse(unit['received_date']).toLocal()), style: const pw.TextStyle(fontSize: 12)),
-                pw.SizedBox(height: 10),
+                  pw.Text('Entry: ' + DateFormat('MMM d, y h:mm a').format(DateTime.parse(unit['received_date']).toLocal()), style: const pw.TextStyle(fontSize: 9)),
+                pw.SizedBox(height: 6),
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
-                    pw.Text('Item', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                    pw.Text('Price', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  ]
+                    pw.Text('Item', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)),
+                    pw.Text('Price', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10)),
+                  ],
                 ),
-                pw.Divider(),
+                pw.Divider(thickness: 0.5),
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
-                    pw.Expanded(child: pw.Text(product['name'].toString())),
-                    pw.Text('Rs. ' + product['price'].toString()),
-                  ]
+                    pw.Expanded(child: pw.Text(product['name'].toString(), style: const pw.TextStyle(fontSize: 10))),
+                    pw.Text('Rs. ' + product['price'].toString(), style: const pw.TextStyle(fontSize: 10)),
+                  ],
                 ),
-                pw.Divider(),
+                pw.Divider(thickness: 0.5),
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
-                    pw.Text('Total', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
-                    pw.Text('Rs. ' + product['price'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 16)),
-                  ]
+                    pw.Text('Total', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                    pw.Text('Rs. ' + product['price'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                  ],
                 ),
-                pw.SizedBox(height: 20),
-                pw.Center(child: pw.Text('Thank you for shopping with us!', style: const pw.TextStyle(fontSize: 12))),
-                pw.SizedBox(height: 10),
-                pw.Center(child: pw.BarcodeWidget(
-                  barcode: pw.Barcode.code128(),
-                  data: unit['qr_code'],
-                  width: 150,
-                  height: 50,
-                  drawText: true,
-                )),
+                pw.SizedBox(height: 12),
+                pw.Center(child: pw.Text('Thank you for shopping with us!', style: const pw.TextStyle(fontSize: 9))),
+                pw.SizedBox(height: 8),
+                pw.Center(
+                  child: pw.BarcodeWidget(
+                    barcode: pw.Barcode.code128(),
+                    data: unit['qr_code'],
+                    width: 105,
+                    height: 35,
+                    drawText: true,
+                    textStyle: const pw.TextStyle(fontSize: 8),
+                  ),
+                ),
               ],
             ),
           );
@@ -223,7 +301,7 @@ class SaleSuccessScreen extends StatelessWidget {
 
     await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => pdf.save(),
-      name: 'Bill_' + unit['qr_code'],
+      name: 'Receipt_' + unit['qr_code'],
     );
   }
 
