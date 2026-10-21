@@ -115,28 +115,41 @@ class SaleSuccessScreen extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.print, color: Color(0xFF0F172A)),
-                        label: const Text('Print Sticker Bill (50x25mm)', style: TextStyle(color: Color(0xFF0F172A), fontWeight: FontWeight.bold)),
+                        label: const Text('Print Bill (80mm Hoin / HOP-E300)', style: TextStyle(color: Color(0xFF0F172A), fontWeight: FontWeight.bold, fontSize: 15)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFD4AF37),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
-                        onPressed: () => _printStickerBill(context, product, soldAt),
+                        onPressed: () => _print80mmBill(context, product, soldAt),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     Expanded(
                       child: OutlinedButton.icon(
-                        icon: const Icon(Icons.receipt_long, color: Color(0xFFD4AF37)),
-                        label: const Text('Print Receipt (58mm Paper)', style: TextStyle(color: Color(0xFFD4AF37))),
+                        icon: const Icon(Icons.label, color: Color(0xFFD4AF37), size: 18),
+                        label: const Text('Sticker (50x25mm)', style: TextStyle(color: Color(0xFFD4AF37), fontSize: 12)),
                         style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                           side: const BorderSide(color: Color(0xFFD4AF37)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                        onPressed: () => _printStickerBill(context, product, soldAt),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.receipt, color: Color(0xFF94A3B8), size: 18),
+                        label: const Text('58mm Paper Roll', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12)),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          side: const BorderSide(color: Color(0xFF475569)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         ),
                         onPressed: () => _printFullReceipt(context, product, soldAt),
                       ),
@@ -165,6 +178,89 @@ class SaleSuccessScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _print80mmBill(BuildContext context, Map<String, dynamic> product, String soldAt) async {
+    final pdf = pw.Document();
+
+    pw.MemoryImage? logoImage;
+    try {
+      final ByteData data = await rootBundle.load('assets/logo.png');
+      logoImage = pw.MemoryImage(data.buffer.asUint8List());
+    } catch (e) {
+      // Logo not found, continue without it
+    }
+
+    // Standard 80mm roll format (79.5mm width for Hoin HOP-E300)
+    const receiptFormat = PdfPageFormat(79.5 * PdfPageFormat.mm, double.infinity, marginAll: 3 * PdfPageFormat.mm);
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: receiptFormat,
+        build: (pw.Context context) {
+          return pw.Container(
+            padding: const pw.EdgeInsets.all(6),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                if (logoImage != null)
+                  pw.Center(
+                    child: pw.Image(logoImage, width: 55, height: 55),
+                  ),
+                if (logoImage != null) pw.SizedBox(height: 8),
+                pw.Center(child: pw.Text('MR Mobile Accessories', style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold))),
+                pw.Divider(thickness: 0.8),
+                pw.Text('Sold Time: ' + soldAt, style: const pw.TextStyle(fontSize: 11)),
+                if (unit['received_date'] != null)
+                  pw.Text('Entry Time: ' + DateFormat('MMM d, y h:mm a').format(DateTime.parse(unit['received_date']).toLocal()), style: const pw.TextStyle(fontSize: 11)),
+                pw.SizedBox(height: 8),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('Item', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                    pw.Text('Price', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
+                  ],
+                ),
+                pw.Divider(thickness: 0.8),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Expanded(child: pw.Text(product['name'].toString(), style: const pw.TextStyle(fontSize: 12))),
+                    pw.Text('Rs. ' + product['price'].toString(), style: const pw.TextStyle(fontSize: 12)),
+                  ],
+                ),
+                pw.Divider(thickness: 0.8),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('Total', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)),
+                    pw.Text('Rs. ' + product['price'].toString(), style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 15)),
+                  ],
+                ),
+                pw.SizedBox(height: 16),
+                pw.Center(child: pw.Text('Thank you for shopping with us!', style: const pw.TextStyle(fontSize: 11))),
+                pw.SizedBox(height: 10),
+                pw.Center(
+                  child: pw.BarcodeWidget(
+                    barcode: pw.Barcode.code128(),
+                    data: unit['qr_code'],
+                    width: 140,
+                    height: 45,
+                    drawText: true,
+                    textStyle: const pw.TextStyle(fontSize: 10),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+      name: 'Bill_80mm_' + unit['qr_code'],
     );
   }
 
