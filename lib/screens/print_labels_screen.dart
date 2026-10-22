@@ -225,12 +225,49 @@ class _PrintLabelsScreenState extends State<PrintLabelsScreen> {
               ],
             ),
           ),
-          // PDF Preview
+          // Live Size Dimension Indicator Bar
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: const BoxDecoration(
+              color: Color(0xFF0F172A),
+              border: Border(bottom: BorderSide(color: Color(0xFF1E293B))),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.check_circle, color: Color(0xFF10B981), size: 16),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Screen Preview Size: ${_selectedWidth.toInt()}mm × ${_selectedHeight.toInt()}mm',
+                      style: const TextStyle(color: Color(0xFF10B981), fontWeight: FontWeight.bold, fontSize: 13),
+                    ),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E293B),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(color: const Color(0xFF334155)),
+                  ),
+                  child: Text(
+                    'Ratio ${(_selectedWidth / _selectedHeight).toStringAsFixed(1)}:1',
+                    style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 11, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // PDF Preview with dynamic on-screen width scaling
           Expanded(
             child: PdfPreview(
-              key: ValueKey('$_selectedWidth x $_selectedHeight'),
+              key: ValueKey('preview_${_selectedWidth}_${_selectedHeight}'),
+              shouldRepaint: true,
               canChangePageFormat: false,
               canChangeOrientation: false,
+              maxPageWidth: (_selectedWidth * 4.2).clamp(180.0, 480.0),
               pageFormats: {
                 '${_selectedWidth.toInt()}x${_selectedHeight.toInt()}mm': PdfPageFormat(
                   _selectedWidth * PdfPageFormat.mm,
